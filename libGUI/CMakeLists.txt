@@ -1,6 +1,6 @@
 # GUI #
 #######
-INCLUDE(${PROJECT_SOURCE_DIR}/cmake/UseImGUI.cmake)
+INCLUDE(../cmake/UseImGUI.cmake)
 
 SET(sources
         GUI.cpp

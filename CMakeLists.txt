@@ -4,11 +4,6 @@ project(libGUI3D)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-function" )
-
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-
-
 #################################
 # Specify the CMake module path #
 #################################
@@ -25,3 +20,4 @@ INCLUDE(${PROJECT_SOURCE_DIR}/cmake/UseCxxTools.cmake)
 ADD_SUBDIRECTORY(libGUI)
 ADD_SUBDIRECTORY(libGUI3D)
 
+INCLUDE(${PROJECT_SOURCE_DIR}/cmake/SetEasyInstall.cmake)
