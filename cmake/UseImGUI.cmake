@@ -41,7 +41,7 @@ IF(NOT ${NAME}_DOWNLOADED)
     )
     SET(${NAME}_DOWNLOADED 1 CACHE STRING "Set to 1 if imgui is found, 0 otherwise")
 ENDIF()
-message("DIR: " ${${NAME}_INSTALL_DIR})
+#message("DIR: " ${${NAME}_INSTALL_DIR})
 add_custom_command(OUTPUT ${NAME}_update
         COMMAND ${GIT_EXECUTABLE} reset --hard
         COMMAND ${GIT_EXECUTABLE} pull
@@ -60,7 +60,7 @@ find_package(OpenGL REQUIRED)
 FIND_PACKAGE(gl3w REQUIRED)
 find_package(glfw3 REQUIRED)
 find_package( Threads REQUIRED)
-#message("gl3w_SOURCE: " ${gl3w_SOURCE})
+message("gl3w_SOURCE: " ${gl3w_SOURCE})
 add_library(imgui STATIC
     ${gl3w_SOURCE}
     ${ImGUIFileDialog_INSTALL_DIR}/ImGuiFileDialog/ImGuiFileDialog.cpp
@@ -68,23 +68,26 @@ add_library(imgui STATIC
     ${ImGUI_INSTALL_DIR}/imgui_demo.cpp
     ${ImGUI_INSTALL_DIR}/imgui_draw.cpp
     ${ImGUI_INSTALL_DIR}/imgui_widgets.cpp
-    ${ImGUI_INSTALL_DIR}/examples/imgui_impl_glfw.cpp
-    ${ImGUI_INSTALL_DIR}/examples/imgui_impl_opengl3.cpp
+    ${ImGUI_INSTALL_DIR}/backends/imgui_impl_glfw.cpp
+    ${ImGUI_INSTALL_DIR}/backends/imgui_impl_opengl3.cpp
 )
+#message("gl3w_INCLUDE_DIRS: " ${gl3w_INCLUDE_DIRS})
+target_include_directories(imgui
+        PUBLIC ${gl3w_INCLUDE_DIRS}
+        PUBLIC ${ImGUI_INSTALL_DIR}
+        PUBLIC ${ImGUI_INSTALL_DIR}/backends/
+        PUBLIC ${ImGUIFileDialog_INSTALL_DIR}/ImGuiFileDialog/
+        )
 
 target_link_libraries(imgui
     PUBLIC ${OPENGL_LIBRARIES}
     PUBLIC glfw
     PUBLIC dl
-        PUBLIC ${CMAKE_THREAD_LIBS_INIT}
+    PUBLIC ${CMAKE_THREAD_LIBS_INIT}
 )
-#message("gl3w_INCLUDE_DIRS: " ${gl3w_INCLUDE_DIRS})
-target_include_directories(imgui
-    PUBLIC ${gl3w_INCLUDE_DIRS}
-    PUBLIC ${ImGUI_INSTALL_DIR}
-    PUBLIC ${ImGUI_INSTALL_DIR}/examples
-    PUBLIC ${ImGUIFileDialog_INSTALL_DIR}/ImGuiFileDialog/
-)
+
+#set_target_properties(imgui PROPERTIES LINKER_LANGUAGE C LINKER_LANGUAGE CXX)
+#set_property(TARGET imgui PROPERTY C_STANDARD 11 CXX_STANDARD 11)
 target_compile_definitions(imgui PUBLIC -DIMGUI_IMPL_OPENGL_LOADER_GL3W)
 
 if (WIN32)
