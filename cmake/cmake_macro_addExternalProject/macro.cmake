@@ -25,7 +25,7 @@ if (NOT ${BUILD_DIR})
     #  set (CMAKE_INSTALL_PREFIX ${OUTPUT_PATH} CACHE PATH "default install path" FORCE )
     #endif()
 
-    configure_file(${PROJECT_SOURCE_DIR}/cmake/cmake_macro_addExternalProject/ExternalProject.cmake.in
+    configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake_macro_addExternalProject/ExternalProject.cmake.in
 		${PROJECT_BINARY_DIR}/${NAME}/build/setup/CMakeLists.txt)
     execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
         	RESULT_VARIABLE result

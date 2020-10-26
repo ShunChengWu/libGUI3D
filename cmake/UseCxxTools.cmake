@@ -1,5 +1,4 @@
-include(${PROJECT_SOURCE_DIR}/cmake/cmake_macro_addExternalProject/macro.cmake)
-
+INCLUDE(${CMAKE_CURRENT_LIST_DIR}/cmake_macro_addExternalProject/macro.cmake)
 addExternalProjectGit (
 	cxxtools
 	https://github.com/ShunChengWu/CxxTools.git
