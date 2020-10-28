@@ -4,6 +4,8 @@ project(libGUI3D)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+OPTION(BUILD_DEMO "Build demo" OFF)
+
 #################################
 # Specify the CMake module path #
 #################################
@@ -20,4 +22,7 @@ INCLUDE(${PROJECT_SOURCE_DIR}/cmake/UseCxxTools.cmake)
 ADD_SUBDIRECTORY(libGUI)
 ADD_SUBDIRECTORY(libGUI3D)
 
-INCLUDE(${PROJECT_SOURCE_DIR}/cmake/SetEasyInstall.cmake)
+IF(BUILD_DEMO)
+    ADD_EXECUTABLE(demo demo.cpp)
+    TARGET_LINK_LIBRARIES(demo GUI3D)
+ENDIF()
