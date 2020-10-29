@@ -21,6 +21,8 @@ namespace SC {
 
         void show();
 
+        glm::mat4 projection_matrix(float fx, float fy, float cx, float cy, int w, int h) const ;
+
         float fovy;
         bool bShowUI;
         float near;

@@ -1,7 +1,7 @@
 #ifndef GLMODEL_H
 #define GLMODEL_H
 
-#include <glad/glad.h>
+//#include <glad/glad.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -156,6 +156,7 @@ namespace glUtil{
             
             ss << "out vec4 FragColor;\n";
             ss << "in vec3 FragPose;\n";
+            ss << "in vec3 Color;\n";
             ss << "in vec3 Normal;\n";
             ss << "in vec2 TexCoords;\n";
             ss << "in vec3 Tangent;\n";
@@ -175,11 +176,13 @@ namespace glUtil{
             ss.open(outputPath + ".vs", std::fstream::out);
             ss << "#version 330 core\n";
             ss << "layout (location = 0) in vec3 aPos;\n";
-            ss << "layout (location = 1) in vec3 aNormal;\n";
-            ss << "layout (location = 2) in vec2 aTexCoords;\n";
-            ss << "layout (location = 3) in vec3 aTangent;\n";
-            ss << "layout (location = 4) in vec3 aBiTangent;\n";
+            ss << "layout (location = 1) in vec3 aColor;\n";
+            ss << "layout (location = 2) in vec3 aNormal;\n";
+            ss << "layout (location = 3) in vec2 aTexCoords;\n";
+            ss << "layout (location = 4) in vec3 aTangent;\n";
+            ss << "layout (location = 5) in vec3 aBiTangent;\n";
             ss << "out vec3 FragPos;\n";
+            ss << "out vec3 Color;\n";
             ss << "out vec3 Normal;\n";
             ss << "out vec2 TexCoords;\n";
             ss << "out vec3 Tangent;\n";
@@ -189,6 +192,7 @@ namespace glUtil{
             ss << "uniform mat4 projection;\n";
             ss << "void main(){\n";
             ss << "\tFragPos = vec3(model * vec4(aPos, 1.0));\n";
+            ss << "\tColor = aColor;\n";
             ss << "\tNormal = mat3(transpose(inverse(model))) * aNormal;\n";
             ss << "\tTexCoords = aTexCoords;\n";
             ss << "\tgl_Position = projection * view * vec4(FragPos, 1.0);\n";
@@ -246,7 +250,7 @@ namespace glUtil{
             hasTextures = scene->HasTextures();
             hasMaterials = scene->HasMaterials();
             hasAnimations = scene->HasAnimations();
-            
+
             // check for errors
             if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
             {
@@ -297,6 +301,11 @@ namespace glUtil{
                 vector.x = mesh->mVertices[i].x;
                 vector.y = mesh->mVertices[i].y;
                 vector.z = mesh->mVertices[i].z;
+                if(mesh->HasVertexColors(0)){
+                    vertex.Color.r = mesh->mColors[0][i].r;
+                    vertex.Color.g = mesh->mColors[0][i].g;
+                    vertex.Color.b = mesh->mColors[0][i].b;
+                }
                 
                 if(std::isnan(boundaries.pX)){
                     boundaries.pX = boundaries.mX = vector.x;

@@ -20,6 +20,29 @@ width(10.0f)
 
 ProjectionControl::~ProjectionControl() = default;
 
+//void ProjectionControl::SetParams(float fx,float fy, float cx, float cy){
+//    width_ = cx*2;
+//    height_ = cy*2;
+//    fovy = 2*atan(height_/(2*fy));
+//}
+
+glm::mat4 ProjectionControl::projection_matrix(float fx, float fy, float cx, float cy, int w, int h) const {
+    glm::mat4 proj;
+
+
+    proj = glm::perspective<float>(glm::radians(fovy),
+                                   (float) w / (float) h,
+                                   near, far);
+    proj[0][0] = 2 * fx / w;
+    proj[2][0] = -(2*(cx / w) - 1);
+    proj[1][1] = 2 * fy / h;
+    proj[2][1] = -(2*(cy / h) - 1);
+    proj[2][2] = -(far+near)/(far-near);
+    proj[3][2] = -2*(far*near)/(far-near);
+    proj[2][3] = -1;
+    return proj;
+}
+
 glm::mat4 ProjectionControl::projection_matrix() const {
     double aspect_ratio = float(width_)/float(height_);
     glm::mat4 proj;

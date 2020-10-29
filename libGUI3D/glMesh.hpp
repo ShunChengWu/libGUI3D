@@ -19,6 +19,8 @@ namespace glUtil{
     struct Vertex {
         // position
         glm::vec3 Position;
+        // color
+        glm::vec3 Color;
         // normal
         glm::vec3 Normal;
         // texCoords
@@ -28,16 +30,20 @@ namespace glUtil{
         // bitangent
         glm::vec3 Bitangent;
         Vertex(){}
-        Vertex(glm::vec3 p, glm::vec3 n = glm::vec3(0.f), glm::vec2 te = glm::vec2(0.f), glm::vec3 ta = glm::vec3(0.f), glm::vec3 b = glm::vec3(0.f)){
+        Vertex(glm::vec3 p, glm::vec3 c = glm::vec3(0.f), glm::vec3 n = glm::vec3(0.f), glm::vec2 te = glm::vec2(0.f), glm::vec3 ta = glm::vec3(0.f), glm::vec3 b = glm::vec3(0.f)){
             Position = p;
+            Color = c;
             Normal = n;
             TexCoords = te;
             Tangent = ta;
             Bitangent = b;
         }
-        Vertex(float p1, float p2=0, float p3=0, float n1=0, float n2=0, float n3=0, float te1=0, float te2=0, float ta1=0, float ta2=0, float ta3=0, float b1=0, float b2=0, float b3=0){
+        Vertex(float p1, float p2=0, float p3=0,
+                float c1=0, float c2=0, float c3=0,
+                float n1=0, float n2=0, float n3=0, float te1=0, float te2=0, float ta1=0, float ta2=0, float ta3=0, float b1=0, float b2=0, float b3=0){
             Position = glm::vec3(p1,p2,p3);
             Normal = glm::vec3(n1,n2,n3);
+            Color = glm::vec3(c1,c2,c3);
             TexCoords = glm::vec2(te1,te2);
             Tangent = glm::vec3(ta1,ta2,ta3);
             Bitangent = glm::vec3(b1,b2,b3);
@@ -198,18 +204,21 @@ namespace glUtil{
             // vertex Positions
             glEnableVertexAttribArray(0);
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-            // vertex normals
+            // vertex Colors
             glEnableVertexAttribArray(1);
-            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
-            // vertex texture coords
+            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Color));
+            // vertex normals
             glEnableVertexAttribArray(2);
-            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
-            // vertex tangent
+            glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
+            // vertex texture coords
             glEnableVertexAttribArray(3);
-            glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
-            // vertex bitangent
+            glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
+            // vertex tangent
             glEnableVertexAttribArray(4);
-            glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
+            glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
+            // vertex bitangent
+            glEnableVertexAttribArray(5);
+            glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
 
             glBindVertexArray(0);
         }
