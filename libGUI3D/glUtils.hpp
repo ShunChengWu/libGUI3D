@@ -23,6 +23,78 @@
 #include "glMesh.hpp"
 
 namespace glUtil {
+
+    template<class T>
+    static Eigen::Matrix<T,4,4> lookAt(Eigen::Matrix<T,3,1> const& eye,
+                                Eigen::Matrix<T,3,1> const& center,
+                                Eigen::Matrix<T,3,1> const & up) {
+        const Eigen::Matrix<T,3,1> f = (center - eye).normalized();
+        Eigen::Matrix<T,3,1> u = up.normalized();
+        const Eigen::Matrix<T,3,1> s = f.cross(u).normalized();
+        u = s.cross(f);
+        Eigen::Matrix<T,4,4> res;
+        res <<  s.x(), s.y(), s.z(), -s.dot(eye),
+                u.x(), u.y(), u.z(), -u.dot(eye),
+                -f.x(), -f.y(), -f.z(), f.dot(eye),
+                0, 0, 0, 1;
+        return res;
+    };
+
+    static Eigen::Matrix4f GetViewMatrix(const Eigen::Matrix4f &pose){
+        Eigen::Matrix4f camera_pose = pose.transpose();
+        Eigen::Vector3f camera_direction;
+        Eigen::Vector3f camera_right;
+        Eigen::Vector3f camera_up;
+        Eigen::Vector3f camera_eye;
+        Eigen::Vector3f camera_center;
+        Eigen::Matrix4f view_pose;
+        camera_direction = camera_pose.block<3, 3>(0, 0) * Eigen::Vector3f(0, 0, 1);
+        camera_right = camera_pose.block<3, 3>(0, 0) * Eigen::Vector3f(1, 0, 0);
+        camera_up = camera_right.cross(camera_direction);
+        camera_eye = camera_pose.block<3, 1>(0, 3);
+        camera_center = camera_eye + 1 * camera_direction;
+        view_pose = lookAt(camera_eye, camera_center, camera_up);
+        return view_pose;
+    }
+
+    template<typename T, int m, int n>
+    static inline glm::mat<m, n, float, glm::precision::highp> E2GLM(const Eigen::Matrix<T, m, n>& em)
+    {
+        glm::mat<m, n, float, glm::precision::highp> mat;
+        for (int i = 0; i < m; ++i)
+        {
+            for (int j = 0; j < n; ++j)
+            {
+                mat[j][i] = em(i, j);
+            }
+        }
+        return mat;
+    }
+
+    template<typename T, int m, int n>
+    static  inline Eigen::Matrix<T, m, n> GLM2E(const glm::mat<m, n, float, glm::precision::highp> &mat) {
+        Eigen::Matrix<T, m, n> em;
+        for (int i = 0; i < m; ++i)
+        {
+            for (int j = 0; j < n; ++j)
+            {
+                em(i, j) = mat[j][i];
+            }
+        }
+        return em;
+    }
+
+    template<typename T, int m>
+    static inline glm::vec<m, float, glm::precision::highp> E2GLM(const Eigen::Matrix<T, m, 1>& em)
+    {
+        glm::vec<m, float, glm::precision::highp> v;
+        for (int i = 0; i < m; ++i)
+        {
+            v[i] = em(i);
+        }
+        return v;
+    }
+
     class Utils {
     public:
         // faces should have 6 paths: right, left, front, back, top, bottom
