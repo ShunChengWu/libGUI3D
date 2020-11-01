@@ -24,6 +24,7 @@ target_link_libraries(GUI3D
         )
 TARGET_INCLUDE_DIRECTORIES(GUI3D
         PUBLIC ${glm_INCLUDE_DIRS}
+        PUBLIC ./stb
         )
 IF(FreeType2_FOUND)
     message("FreeType2_LIBRARIES: " ${FreeType2_LIBRARIES})
