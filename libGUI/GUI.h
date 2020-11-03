@@ -32,8 +32,10 @@ namespace SC{
         int width, height;
         int runtimeWidth{}, runtimeHeight{};
 //        float nearPlane=0.4, farPlane=500.f;
-        GLFWWindowContainer(std::string name, int width, int height, float nearPlane=0.4, float farPlane=500.f):
+        GLFWWindowContainer(std::string name, int width, int height, float nearPlane=0.4, float farPlane=500.f, bool visible=true):
         name_(std::move(name)), width(width),height(height){
+            if(!visible)
+                glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
             window = glfwCreateWindow(width,height,name_.c_str(),nullptr,nullptr);
         }
         ~GLFWWindowContainer(){
@@ -49,7 +51,7 @@ namespace SC{
         GUI_base();
         ~GUI_base();
 
-        void initWindow(const std::string &name, int width, int height);
+        void initWindow(const std::string &name, int width, int height, bool visible=true);
 
         virtual void run();
 

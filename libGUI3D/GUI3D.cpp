@@ -1,8 +1,8 @@
 #include "GUI3D.h"
 using namespace SC;
 
-GUI3D::GUI3D(const std::string &name, int width, int height){
-    GUI_base::initWindow(name,width,height);
+GUI3D::GUI3D(const std::string &name, int width, int height,bool visible){
+    GUI_base::initWindow(name,width,height,visible);
     fps_ = new FPSManager();
     bShowFPS = bShowGrid = false;
     bPlotTrajectory = true;

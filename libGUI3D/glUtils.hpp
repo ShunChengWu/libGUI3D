@@ -40,6 +40,17 @@ namespace glUtil {
         return res;
     };
 
+    template<class T>
+    static Eigen::Matrix<T,4,4> Perspective(float fx,float fy, float cx, float cy, int width, int height, double n, double f) {
+        assert(f > n);
+        Eigen::Matrix<T,4,4> res = Eigen::Matrix<T,4,4>::Zero();
+        res << 2 * fx / width, 0, -(2*(cx / width) -1), 0,
+                0, 2 * fy / height, -(2*(cy / height) -1), 0,
+                0, 0,  -(f+n)/(f-n), -2*f*n/(f-n),
+                0, 0, -1, 0;
+        return res;
+    }
+
     static Eigen::Matrix4f GetViewMatrix(const Eigen::Matrix4f &pose){
         Eigen::Matrix4f camera_pose = pose.transpose();
         Eigen::Vector3f camera_direction;

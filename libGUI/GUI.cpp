@@ -47,8 +47,8 @@ void GUI_base::init() {
 #endif
 }
 
-void GUI_base::initWindow(const std::string& name, int width, int height) {
-    window_ = new GLFWWindowContainer(name, width, height);
+void GUI_base::initWindow(const std::string& name, int width, int height, bool visible) {
+    window_ = new GLFWWindowContainer(name, width, height,0.4,500.f,visible);
     if(!window_->window)
     {
         std::cout << "Failed to create GLFW window" << std::endl;

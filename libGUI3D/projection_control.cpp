@@ -5,6 +5,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <stdexcept>
+
 using namespace SC;
 
 ProjectionControl::ProjectionControl(unsigned int windowWidth, unsigned int windowHeight)
@@ -26,19 +28,18 @@ ProjectionControl::~ProjectionControl() = default;
 //    fovy = 2*atan(height_/(2*fy));
 //}
 
-glm::mat4 ProjectionControl::projection_matrix(float fx, float fy, float cx, float cy, int w, int h) const {
+glm::mat4 ProjectionControl::projection_matrix(float fx, float fy, float cx, float cy, int w, int h, float n, float f) {
     glm::mat4 proj;
-
-
-    proj = glm::perspective<float>(glm::radians(fovy),
-                                   (float) w / (float) h,
-                                   near, far);
-    proj[0][0] = 2 * fx / w;
-    proj[2][0] = -(2*(cx / w) - 1);
-    proj[1][1] = 2 * fy / h;
-    proj[2][1] = -(2*(cy / h) - 1);
-    proj[2][2] = -(far+near)/(far-near);
-    proj[3][2] = -2*(far*near)/(far-near);
+    throw std::runtime_error("this is not working for now. Check glUtils::Perspective");
+//    proj = glm::perspective<float>(glm::radians(fovy),
+//                                   (float) w / (float) h,
+//                                   n, f);
+    proj[0][0] = 2 * fx / float(w);
+    proj[2][0] = -(2*(cx / float(w)) - 1);
+    proj[1][1] = 2 * fy / float(h);
+    proj[2][1] = -(2*(cy / float(h)) - 1);
+    proj[2][2] = -(f + n) / (f - n);
+    proj[3][2] = -2 * (f * n) / (f - n);
     proj[2][3] = -1;
     return proj;
 }
