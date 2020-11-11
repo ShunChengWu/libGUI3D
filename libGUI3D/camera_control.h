@@ -346,6 +346,7 @@ namespace SC{
             WorldUp = glm::vec3(upX, upY, upZ);
             left_button_down = middle_button_down = right_button_down = false;
         }
+        void SetDistance(float v) {distance = v;}
 
         // Returns the view matrix calculated using Euler Angles and the LookAt Matrix
         glm::mat4 GetViewMatrix() override
