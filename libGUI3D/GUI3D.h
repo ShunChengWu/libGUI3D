@@ -24,7 +24,7 @@ namespace SC{
     };
     class FPSManager{
     public:
-        explicit FPSManager(double targetFPS = 60.0){
+        explicit FPSManager(double targetFPS = 30.0){
             fpsCounter_  = fps_ = targetFPS;
             diff_ = 0;
             fps_time_pre_ = fps_time_ = lasttime_ = -1;
@@ -39,34 +39,28 @@ namespace SC{
         }
 
         void updateFPS(){
-            fps_time_ = glfwGetTime();
+            stop();
             if(fps_time_pre_ < 0) { // init
-                fps_time_pre_ = fps_time_;
+                start();
                 return;
             }
-            fpsCounter_++;
-            diff_ = fps_time_ - fps_time_pre_;
-            if (diff_ > 1.0) {
-                fps_ = double(fpsCounter_) / diff_;
-                fpsCounter_ = 0;
-                fps_time_pre_ += diff_;
-            }
+            checkUpdate();
         }
 
-        void start(){
+        inline void start(){
             fps_time_pre_ = glfwGetTime();
         }
-        void stop(){
+        inline void stop(){
             fps_time_ = glfwGetTime();
         }
 
-        void checkUpdate(){
+        inline void checkUpdate(){
             diff_ += fps_time_-fps_time_pre_;
             fpsCounter_++;
             if (diff_ > 1.0) {
                 fps_ = double(fpsCounter_) / diff_;
                 fpsCounter_ = 0;
-//            fps_time_pre_ += diff_;
+                fps_time_pre_ += diff_;
                 diff_=0;
             }
         }
