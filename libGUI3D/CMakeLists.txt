@@ -9,6 +9,7 @@ SET(sources
         glUtils.cpp
         projection_control.cpp
         PointsRenderer.cpp
+        ImageDrawer.cpp
         )
 SET(headers
         GUI3D.h
