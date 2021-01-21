@@ -51,7 +51,7 @@ namespace glUtil {
         return res;
     }
 
-    static Eigen::Matrix4f GetViewMatrix(const Eigen::Matrix4f &pose){
+    [[maybe_unused]] static Eigen::Matrix4f GetViewMatrix(const Eigen::Matrix4f &pose){
         Eigen::Matrix4f camera_pose = pose.transpose();
         Eigen::Vector3f camera_direction;
         Eigen::Vector3f camera_right;

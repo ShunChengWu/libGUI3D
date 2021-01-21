@@ -262,29 +262,53 @@ namespace glUtil{
             glUniformMatrix3fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, affine.template cast<float>().data());
         }
 
-        /// Initialize a uniform parameter with a 3D vector (int)
-        template <typename T, typename std::enable_if<detail::type_traits<T>::integral == 1, int>::type = 0>
+        /// Initialize a uniform parameter with a 3D vector
+        template <typename T>
         void set(const std::string &name, const Eigen::Matrix<T, 3, 1>  &v, bool warn = true) {
-            glUniform3i(glGetUniformLocation(ID, name.c_str()), (int) v.x(), (int) v.y(), (int) v.z());
+            if(typeid(T) == typeid(uint))
+                glUniform3ui(glGetUniformLocation(ID, name.c_str()), (unsigned int) v.x(), (unsigned int) v.y(), (unsigned int) v.z());
+            else if(typeid(T) == typeid(int))
+                glUniform3i(glGetUniformLocation(ID, name.c_str()), (int) v.x(), (int) v.y(), (int) v.z());
+            else if(typeid(T) == typeid(float) || typeid(T) == typeid(double))
+                glUniform3f(glGetUniformLocation(ID, name.c_str()), (float) v.x(), (float) v.y(), (float) v.z());
+            else if(typeid(T) == typeid(bool))
+                throw "ERROR::GLUNIFORM::BOOL type only accept one input argument!. \n";
+            else
+                throw "ERROR::GLUNIFORM::Input type does not support!. \n";
         }
 
-        /// Initialize a uniform parameter with a 3D vector (float)
-        template <typename T, typename std::enable_if<detail::type_traits<T>::integral == 0, int>::type = 0>
-        void set(const std::string &name, const Eigen::Matrix<T, 3, 1>  &v, bool warn = true) {
-            glUniform3f(glGetUniformLocation(ID, name.c_str()), (float) v.x(), (float) v.y(), (float) v.z());
-        }
-
-        /// Initialize a uniform parameter with a 4D vector (int)
-        template <typename T, typename std::enable_if<detail::type_traits<T>::integral == 1, int>::type = 0>
+        /// Initialize a uniform parameter with a 4D vector
+        template <typename T>
         void set(const std::string &name, const Eigen::Matrix<T, 4, 1>  &v, bool warn = true) {
-            glUniform4i(glGetUniformLocation(ID, name.c_str()), (int) v.x(), (int) v.y(), (int) v.z(), (int)v.w());
+            if(typeid(T) == typeid(uint))
+                glUniform4ui(glGetUniformLocation(ID, name.c_str()), (unsigned int) v.x(), (unsigned int) v.y(), (unsigned int) v.z(), (unsigned int) v.w());
+            else if(typeid(T) == typeid(int))
+                glUniform4i(glGetUniformLocation(ID, name.c_str()), (int) v.x(), (int) v.y(), (int) v.z(), (int) v.w());
+            else if(typeid(T) == typeid(float) || typeid(T) == typeid(double))
+                glUniform4f(glGetUniformLocation(ID, name.c_str()), (float) v.x(), (float) v.y(), (float) v.z(), (float) v.w());
+            else if(typeid(T) == typeid(bool))
+                throw "ERROR::GLUNIFORM::BOOL type only accept one input argument!. \n";
+            else
+                throw "ERROR::GLUNIFORM::Input type does not support!. \n";
         }
 
-        /// Initialize a uniform parameter with a 4D vector (float)
-        template <typename T, typename std::enable_if<detail::type_traits<T>::integral == 0, int>::type = 0>
-        void set(const std::string &name, const Eigen::Matrix<T, 4, 1>  &v, bool warn = true) {
-            glUniform4f(glGetUniformLocation(ID, name.c_str()), (float) v.x(), (float) v.y(), (float) v.z(),(float) v.w());
-        }
+//        /// Initialize a uniform parameter with a 3D vector (float)
+//        template <typename T, typename std::enable_if<detail::type_traits<T>::integral == 0, int>::type = 0>
+//        void set(const std::string &name, const Eigen::Matrix<T, 3, 1>  &v, bool warn = true) {
+//            glUniform3f(glGetUniformLocation(ID, name.c_str()), (float) v.x(), (float) v.y(), (float) v.z());
+//        }
+
+//        /// Initialize a uniform parameter with a 4D vector (int)
+//        template <typename T, typename std::enable_if<detail::type_traits<T>::integral == 1, int>::type = 0>
+//        void set(const std::string &name, const Eigen::Matrix<T, 4, 1>  &v, bool warn = true) {
+//            glUniform4i(glGetUniformLocation(ID, name.c_str()), (int) v.x(), (int) v.y(), (int) v.z(), (int)v.w());
+//        }
+//
+//        /// Initialize a uniform parameter with a 4D vector (float)
+//        template <typename T, typename std::enable_if<detail::type_traits<T>::integral == 0, int>::type = 0>
+//        void set(const std::string &name, const Eigen::Matrix<T, 4, 1>  &v, bool warn = true) {
+//            glUniform4f(glGetUniformLocation(ID, name.c_str()), (float) v.x(), (float) v.y(), (float) v.z(),(float) v.w());
+//        }
 #endif
         
         /// prevent error due to incorrect value type (should be int).

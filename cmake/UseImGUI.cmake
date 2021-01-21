@@ -67,6 +67,7 @@ add_library(imgui STATIC
     ${ImGUI_INSTALL_DIR}/imgui.cpp
     ${ImGUI_INSTALL_DIR}/imgui_demo.cpp
     ${ImGUI_INSTALL_DIR}/imgui_draw.cpp
+    ${ImGUI_INSTALL_DIR}/imgui_tables.cpp
     ${ImGUI_INSTALL_DIR}/imgui_widgets.cpp
     ${ImGUI_INSTALL_DIR}/backends/imgui_impl_glfw.cpp
     ${ImGUI_INSTALL_DIR}/backends/imgui_impl_opengl3.cpp
