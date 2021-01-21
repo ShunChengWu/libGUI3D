@@ -68,8 +68,8 @@ void ImageDrawer::Update(const unsigned char *data, int width, int height) {
     glBindTexture(GL_TEXTURE_2D, textID);
     glTexImage2D(GL_TEXTURE_2D, 0, mFormat, width, height, 0, mFormat, GL_UNSIGNED_BYTE, data);
 
-    glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(width), 0.0f,
-                                      static_cast<GLfloat>(height));
+//    glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(width), 0.0f,
+//                                      static_cast<GLfloat>(height));
 }
 
 void ImageDrawer::Draw(){
