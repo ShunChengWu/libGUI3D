@@ -3,7 +3,8 @@
 INCLUDE(../cmake/UseImGUI.cmake)
 
 SET(sources
-        ../../cmake-build-debug/external/gl3w-install/src/gl3w.c
+        #${CMAKE_BINARY_DIR}/external/glew
+        #../../cmake-build-debug/external/gl3w-install/src/gl3w.c
         GUI.cpp
         )
 SET(headers
