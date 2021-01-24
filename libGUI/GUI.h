@@ -49,7 +49,7 @@ namespace SC{
             return *ptrInstance;
         }
         GUI_base();
-        ~GUI_base();
+        virtual ~GUI_base();
 
         void initWindow(const std::string &name, int width, int height, bool visible=true);
 

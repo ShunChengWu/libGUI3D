@@ -86,7 +86,7 @@ namespace SC{
     class GUI3D : public GUI_base{
     public:
         explicit GUI3D(const std::string &name, int width, int height, bool visible=true);
-        ~GUI3D();
+        virtual ~GUI3D();
 
         virtual void drawUI();
         virtual void drawGL();
