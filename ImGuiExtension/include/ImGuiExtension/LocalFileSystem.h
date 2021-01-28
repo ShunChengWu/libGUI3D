@@ -18,6 +18,7 @@ namespace ImGui {
      */
     IMGUI_API bool FileSelectButton(const char *label, char *output_buffer, size_t buffer_size, const char *window_title = "Select File", const std::vector<const char*>& filter_patterns = {"*"});
 
+    IMGUI_API bool FolderSelectButton(const char *label, char *output_buffer, size_t buffer_size, const char *window_title = "Select File");
 }
 
 #endif //LIBGUI3D_LOCALFILESYSTEM_H

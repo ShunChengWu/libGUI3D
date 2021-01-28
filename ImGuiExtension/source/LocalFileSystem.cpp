@@ -39,3 +39,20 @@ bool ImGui::FileSelectButton(const char *label, char *output_buffer, size_t buff
 //    ui_file_open("Filename", "...##5", name_buf, kFilenameBufSize, "Filename",1, kFilter);
 //    ImGui::End();
 }
+
+
+bool ImGui::FolderSelectButton(const char *label, char *output_buffer, size_t buffer_size, const char *window_title) {
+    if (ImGui::Button(label)) {
+        const char *filename = tinyfd_selectFolderDialog(window_title, "");
+        if (filename) strcpy(output_buffer, filename);
+        return true;
+    }
+    return false;
+
+//    ImGui::Begin("File system");
+//    constexpr size_t kFilenameBufSize = 512;
+//    static char name_buf[kFilenameBufSize];
+//    constexpr const char *kFilter[] = {"*"};
+//    ui_file_open("Filename", "...##5", name_buf, kFilenameBufSize, "Filename",1, kFilter);
+//    ImGui::End();
+}

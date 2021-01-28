@@ -208,8 +208,13 @@ void GUI_base::ImGuiFileDialog_demo(){
     constexpr size_t kFilenameBufSize = 512;
     static char name_buf[kFilenameBufSize];
 
-    ImGui::InputText("Filename", name_buf, kFilenameBufSize); ImGui::SameLine();
-    ImGui::FileSelectButton("open",name_buf,kFilenameBufSize);
+    ImGui::InputText("Filename##File", name_buf, kFilenameBufSize); ImGui::SameLine();
+    ImGui::FileSelectButton("select_file",name_buf,kFilenameBufSize);
+
+    constexpr size_t kFilenameBufSize2 = 512;
+    static char name_buf2[kFilenameBufSize2];
+    ImGui::InputText("Filename##Folder", name_buf2, kFilenameBufSize2); ImGui::SameLine();
+    ImGui::FolderSelectButton("select_folder",name_buf2,kFilenameBufSize2);
     ImGui::End();
 
 //    if (ImGui::Button("Open File Dialog"))
