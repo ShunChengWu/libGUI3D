@@ -1,7 +1,7 @@
 #include <stdexcept>
 #include "GUI.h"
 #include <iostream>
-
+//#include "../ImGuiExtension/include/ImGuiExtension/tinyfiledialogs.h"
 using namespace SC;
 
 GUI_base *GUI_base::ptrInstance;
@@ -145,8 +145,30 @@ void GUI_base::run() {
 
 void GUI_base::drawGL() {}
 
+//bool ui_file_open(const char *label, const char *btn, char *buf, size_t buf_size, const char *title,
+//             int filter_num, const char *const *filter_patterns)
+//{
+//    bool ret = ImGui::InputText(label, buf, buf_size);
+//    ImGui::SameLine();
+//
+//    if(ImGui::Button(btn))
+//    {
+//        const char *filename = tinyfd_openFileDialog(title, "", filter_num, filter_patterns,
+//                                                     nullptr, false);
+//        if(filename) strcpy(buf, filename);
+//        ret = true;
+//    }
+//    return ret;
+//}
+
+#include <ImGuiExtension/LocalFileSystem.h>
+
 void GUI_base::drawUI() {
-    if(bDrawDemoUI) ImGui::ShowDemoWindow();
+    if(bDrawDemoUI) {
+        ImGui::ShowDemoWindow();
+
+
+    }
 
 //    ImGuiFileDialog_demo();
 //    auto output = ImGuiFileSelect("Open",0);
@@ -182,51 +204,24 @@ inline void GUI_base::mouse_callback_impl(GLFWwindow* window, double xpos, doubl
 }
 
 void GUI_base::ImGuiFileDialog_demo(){
-// open Dialog Simple
-    if (ImGui::Button("Open File Dialog"))
-        ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".*\0.cpp\0.h\0.hpp\0\0", ".",0);
+    //// open Dialog Simple
+    ImGui::Begin("File system");
+    constexpr size_t kFilenameBufSize = 512;
+    static char name_buf[kFilenameBufSize];
 
-    // display
-    if (ImGuiFileDialog::Instance()->FileDialog("ChooseFileDlgKey"))
-    {
-        // action if OK
-        if (ImGuiFileDialog::Instance()->IsOk)
-        {
-            std::string fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
-            std::string filePathName = ImGuiFileDialog::Instance()->GetFilepathName();
-            std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
-            auto selections = ImGuiFileDialog::Instance()->GetSelection();
-            // action
-            printf("Selected file:\n");
-            printf("%s\n%s\n%s\n", fileName.c_str(), filePathName.c_str(), filePath.c_str());
-            printf("Selected files:\n");
-            for(auto v : selections)
-                printf("%s %s\n", v.first.c_str(), v.second.c_str());
-        }
-        // close
-        ImGuiFileDialog::Instance()->CloseDialog("ChooseFileDlgKey");
-    }
-}
+    ImGui::InputText("Filename", name_buf, kFilenameBufSize); ImGui::SameLine();
+    ImGui::FileSelectButton("open",name_buf,kFilenameBufSize);
+    ImGui::End();
 
-std::vector<std::string> GUI_base::ImGuiFileSelect(const std::string &name, int num){
-    std::vector<std::string> output;
-    if (ImGui::Button("Browse"))
-        ImGuiFileDialog::Instance()->OpenDialog(name, "Choose File", ".*\0.cpp\0.h\0.hpp\0\0", ".",num);
-
-    // display
-    if (ImGuiFileDialog::Instance()->FileDialog(name))
-    {
-        // action if OK
-        if (ImGuiFileDialog::Instance()->IsOk)
-        {
-            if(ImGuiFileDialog::Instance()->GetCurrentFileName().empty()){ // no files selected
-                output.push_back(ImGuiFileDialog::Instance()->GetFilepathName());
-            } else {
-                auto selections = ImGuiFileDialog::Instance()->GetSelection();
-                for(const auto &v : selections)
-                    output.push_back(v.second);
-            }
-
+//    if (ImGui::Button("Open File Dialog"))
+//        ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".*\0.cpp\0.h\0.hpp\0\0", ".",0);
+//
+//    // display
+//    if (ImGuiFileDialog::Instance()->FileDialog("ChooseFileDlgKey"))
+//    {
+//        // action if OK
+//        if (ImGuiFileDialog::Instance()->IsOk)
+//        {
 //            std::string fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
 //            std::string filePathName = ImGuiFileDialog::Instance()->GetFilepathName();
 //            std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
@@ -237,12 +232,47 @@ std::vector<std::string> GUI_base::ImGuiFileSelect(const std::string &name, int 
 //            printf("Selected files:\n");
 //            for(auto v : selections)
 //                printf("%s %s\n", v.first.c_str(), v.second.c_str());
-        }
-        // close
-        ImGuiFileDialog::Instance()->CloseDialog(name);
-    }
-    return output;
+//        }
+//        // close
+//        ImGuiFileDialog::Instance()->CloseDialog("ChooseFileDlgKey");
+//    }
 }
+//
+//std::vector<std::string> GUI_base::ImGuiFileSelect(const std::string &name, int num){
+//    std::vector<std::string> output;
+//    if (ImGui::Button("Browse"))
+//        ImGuiFileDialog::Instance()->OpenDialog(name, "Choose File", ".*\0.cpp\0.h\0.hpp\0\0", ".",num);
+//
+//    // display
+//    if (ImGuiFileDialog::Instance()->FileDialog(name))
+//    {
+//        // action if OK
+//        if (ImGuiFileDialog::Instance()->IsOk)
+//        {
+//            if(ImGuiFileDialog::Instance()->GetCurrentFileName().empty()){ // no files selected
+//                output.push_back(ImGuiFileDialog::Instance()->GetFilepathName());
+//            } else {
+//                auto selections = ImGuiFileDialog::Instance()->GetSelection();
+//                for(const auto &v : selections)
+//                    output.push_back(v.second);
+//            }
+//
+////            std::string fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
+////            std::string filePathName = ImGuiFileDialog::Instance()->GetFilepathName();
+////            std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+////            auto selections = ImGuiFileDialog::Instance()->GetSelection();
+////            // action
+////            printf("Selected file:\n");
+////            printf("%s\n%s\n%s\n", fileName.c_str(), filePathName.c_str(), filePath.c_str());
+////            printf("Selected files:\n");
+////            for(auto v : selections)
+////                printf("%s %s\n", v.first.c_str(), v.second.c_str());
+//        }
+//        // close
+//        ImGuiFileDialog::Instance()->CloseDialog(name);
+//    }
+//    return output;
+//}
 
 void GUI_base::HelpMarker(const char* desc) {
     ImGui::TextDisabled("(?)");

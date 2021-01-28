@@ -19,6 +19,7 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 ######################
 # Add subdirectories #
 ######################
+ADD_SUBDIRECTORY(ImGuiExtension)
 ADD_SUBDIRECTORY(libGUI)
 ADD_SUBDIRECTORY(libGUI3D)
 

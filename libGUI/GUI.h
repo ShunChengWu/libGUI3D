@@ -18,8 +18,9 @@ using namespace gl;
 #include <GLFW/glfw3.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-#include <ImGuiFileDialog.h>
-#include <ImGuiFileDialogConfig.h>
+//#include <ImGuiFileDialog.h>
+//#include <ImGuiFileDialogConfig.h>
+#include <vector>
 #include <string>
 #include <utility>
 namespace SC{
