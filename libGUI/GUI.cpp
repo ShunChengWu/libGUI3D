@@ -1,6 +1,7 @@
 #include <stdexcept>
 #include "GUI.h"
 #include <iostream>
+#include <ImGuiExtension/LocalFileSystem.h>
 //#include "../ImGuiExtension/include/ImGuiExtension/tinyfiledialogs.h"
 using namespace SC;
 
@@ -160,8 +161,6 @@ void GUI_base::drawGL() {}
 //    }
 //    return ret;
 //}
-
-#include <ImGuiExtension/LocalFileSystem.h>
 
 void GUI_base::drawUI() {
     if(bDrawDemoUI) {
