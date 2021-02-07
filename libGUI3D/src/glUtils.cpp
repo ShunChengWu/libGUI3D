@@ -5,7 +5,7 @@
 //  Created by Shun-Cheng Wu on 01/Jan/2019.
 //
 
-#include "glUtils.hpp"
+#include "../include/GUI3D/glUtils.hpp"
 
 namespace glUtil {
 #ifdef WITH_STB

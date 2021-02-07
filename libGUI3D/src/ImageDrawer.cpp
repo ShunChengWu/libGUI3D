@@ -1,7 +1,7 @@
 //
 // Created by sc on 8/23/20.
 //
-#include "ImageDrawer.h"
+#include "../include/GUI3D/ImageDrawer.h"
 
 using namespace glUtil;
 #include <memory>

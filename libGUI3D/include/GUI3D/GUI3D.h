@@ -1,6 +1,6 @@
 #pragma once
 #include <functional>
-#include "../libGUI/GUI.h"
+#include "../../../libGUI/GUI.h"
 #include "glShader.hpp"
 #include "glCamera.hpp"
 #include "projection_control.hpp"
@@ -12,7 +12,7 @@
 #ifdef COMPILE_WITH_FREETYPE
 #include <ft2build.h>
 #include <memory>
-#include FT_FREETYPE_H
+#include FT_FREETYPE_H"freetype/freetype.h"
 #endif
 
 namespace SC{

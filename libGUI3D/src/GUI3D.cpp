@@ -1,4 +1,4 @@
-#include "GUI3D.h"
+#include "../include/GUI3D/GUI3D.h"
 using namespace SC;
 
 GUI3D::GUI3D(const std::string &name, int width, int height,bool visible){

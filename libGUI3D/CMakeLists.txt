@@ -5,18 +5,18 @@ FIND_PACKAGE(FreeType2 REQUIRED)
 FIND_PACKAGE(Eigen3)
 
 SET(sources
-        GUI3D.cpp
-        glUtils.cpp
-        projection_control.cpp
-        PointsRenderer.cpp
-        ImageDrawer.cpp
+        src/GUI3D.cpp
+        src/glUtils.cpp
+        src/projection_control.cpp
+        src/PointsRenderer.cpp
+        src/ImageDrawer.cpp
         )
 SET(headers
-        GUI3D.h
-        glShader.hpp
-        glCamera.hpp
-        glUtils.hpp
-        PointsRenderer.h
+        include/GUI3D/GUI3D.h
+        include/GUI3D/glShader.hpp
+        include/GUI3D/glCamera.hpp
+        include/GUI3D/glUtils.hpp
+        include/GUI3D/PointsRenderer.h
         )
 
 ADD_LIBRARY(GUI3D ${sources} ${headers})
@@ -25,7 +25,8 @@ target_link_libraries(GUI3D
         )
 TARGET_INCLUDE_DIRECTORIES(GUI3D
         PUBLIC ${glm_INCLUDE_DIRS}
-        PUBLIC ./stb
+        PUBLIC include/GUI3D/stb
+        PUBLIC ./include
         )
 IF(FreeType2_FOUND)
     message("FreeType2_LIBRARIES: " ${FreeType2_LIBRARIES})

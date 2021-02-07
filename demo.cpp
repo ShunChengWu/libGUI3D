@@ -2,7 +2,7 @@
 // Created by sc on 10/28/20.
 //
 
-#include "libGUI3D/GUI3D.h"
+#include "libGUI3D/include/GUI3D/GUI3D.h"
 
 
 int main(){
