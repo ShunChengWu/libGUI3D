@@ -7,6 +7,7 @@ GUI3D::GUI3D(const std::string &name, int width, int height,bool visible){
     bShowFPS = bShowGrid = false;
     bPlotTrajectory = true;
     bShowCameraUI=true;//todo: not here
+    bShouldStop = false;
 
     camPose = glm::vec3(0.0f, 0.f,  -4.5f);
     camUp = glm::vec3(0.f, 1.f, 0.f);
@@ -16,6 +17,8 @@ GUI3D::GUI3D(const std::string &name, int width, int height,bool visible){
     init();
 }
 GUI3D::~GUI3D(){
+    glfwSetWindowShouldClose(window_->window, true);
+
     for (auto &model : glObjests)
         if (model.second != NULL) delete model.second;
 //    for (auto &model : glModels)
@@ -452,4 +455,42 @@ void GUI3D::cameraUI() {
 //    ImGui::DragFloat("Near",camera_control->Position)
 //    ImGui::DragFloat3("Position", &camera_control->Position[0]);
 //    ImGui::End();
+}
+
+void GUI3D::run() {
+    bShouldStop = false;
+    while(!glfwWindowShouldClose(window_->window)) {
+        this->run_once();
+        if(bShouldStop) break;
+    }
+}
+
+void GUI3D::key_callback_impl(GLFWwindow *window, int key, int scancode, int action, int mods) {
+//    if (key == GLFW_KEY_E && action == GLFW_PRESS)
+//        bShouldStop = true;
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        bShouldStop = true;
+}
+
+void GUI3D::run_once() {
+    if(glfwWindowShouldClose(window_->window)) return;
+    glfwPollEvents();
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    drawUI();
+
+    ImGui::Render();
+
+    int display_w, display_h;
+    glfwGetFramebufferSize(window_->window, &display_w, &display_h);
+    glViewport(0, 0, display_w, display_h);
+    glClearColor(0.6f, 0.6f, 0.6f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    drawGL();
+
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    glfwSwapBuffers(window_->window);
 }

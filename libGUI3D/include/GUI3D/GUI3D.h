@@ -12,7 +12,7 @@
 #ifdef COMPILE_WITH_FREETYPE
 #include <ft2build.h>
 #include <memory>
-#include FT_FREETYPE_H"freetype/freetype.h"
+#include FT_FREETYPE_H
 #endif
 
 namespace SC{
@@ -91,6 +91,9 @@ namespace SC{
         virtual void drawUI();
         virtual void drawGL();
 
+        void run() override;
+        inline void run_once();
+
 
         /// Adding new key callback
         template <typename Task> void registerKeyFunciton(GLFWWindowContainer* window, int key, Task func, const std::string &description = ""){
@@ -119,6 +122,7 @@ namespace SC{
         FPSManager *fps_;
         bool bShowGrid, bShowFPS;
         bool bPlotTrajectory;
+        std::atomic_bool bShouldStop;
 
         struct task_element_t {
             GLFWWindowContainer* window_;
@@ -137,6 +141,9 @@ namespace SC{
         virtual void basicProcess();
         virtual void plot_trajectory(const glm::mat4 *projection);
         virtual void add_trajectory(float x, float y, float z, float interval=0.002);
+
+        void key_callback_impl(GLFWwindow* window, int key, int scancode, int action, int mods) override;
+
         /// return true is something changed
         bool mouseControl();
 
