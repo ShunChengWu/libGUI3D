@@ -11,8 +11,8 @@ void main()
 //    FragColor = vec4(col, 1.0);
 
     vec4 texColor = texture(screenTexture, TexCoords);
-    if (texColor.a < 0.5)
-      discard;
+//     if (texColor.a < 0.5)
+//       discard;
     FragColor = texColor;
     
 //    float average = 0.2126 * col.r + 0.7152 * col.g + 0.0722 * col.b; // for grayscale

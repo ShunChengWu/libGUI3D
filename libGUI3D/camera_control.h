@@ -33,6 +33,11 @@ namespace SC{
             y = Position.y;
             z = Position.z;
         }
+        virtual void getCamPose(float &x, float &y, float &z) {
+            x = Position.x;
+            y = Position.y;
+            z = Position.z;
+        }
         void setPosition(float x, float y, float z){
             Position.x = x;
             Position.y = y;
@@ -356,6 +361,14 @@ namespace SC{
 
             glm::mat4 mat = glm::lookAt(glm::vec3(eye[0], eye[1], eye[2]), glm::vec3(Position[0], Position[1], Position[2]), glm::vec3(0.0f, 0.0f, 1.0f));
             return mat;
+        }
+
+        void getCamPose(float &x, float &y, float &z) override{
+            glm::vec3 offset = rotation() * glm::vec3(distance, 0.0f, 0.0f);
+            glm::vec3 eye = Position + offset;
+            x = eye[0];
+            y = eye[1];
+            z = eye[2];
         }
 
         void mouse(const glm::vec2& p, int button, bool down) override  {
