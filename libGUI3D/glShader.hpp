@@ -69,57 +69,74 @@ namespace glUtil{
             std::string vertexCode;
             std::string fragmentCode;
             std::string geometryCode;
-            std::ifstream vShaderFile;
-            std::ifstream fShaderFile;
-            std::ifstream gShaderFile;
-            // ensure ifstream objects can throw exceptions:
-            vShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
-            fShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
-            gShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+//            std::ifstream vShaderFile;
+//            std::ifstream fShaderFile;
+//            std::ifstream gShaderFile;
+//            // ensure ifstream objects can throw exceptions:
+//            vShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+//            fShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+//            gShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
 
             // check file exist
             auto file_exist=[](const std::string &name)->bool{
                 std::ifstream f(name.c_str());
                 return f.good();
             };
-            bool isFile = file_exist(vertexPath) && file_exist(fragmentPath);
-            if (!geometryPath.empty()) isFile &= file_exist(geometryPath);
+//            bool isFile = file_exist(vertexPath) && file_exist(fragmentPath);
+//            if (!geometryPath.empty()) isFile &= file_exist(geometryPath);
 
-            if(isFile){
-                try
-                {
-                    // open files
-                    vShaderFile.open(vertexPath);
-                    fShaderFile.open(fragmentPath);
-                    if(geometryPath != "")
-                        gShaderFile.open(geometryPath);
+            auto load=[file_exist](const std::string &path)->std::string{
+                if(path.empty()) return "";
+                if (file_exist(path)) {
+                    std::ifstream file;
+                    file.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+                    file.open(path);
+                    std::stringstream stringstream;
+                    stringstream << file.rdbuf();
+                    return stringstream.str();
+                } else {
+                    return path;
+                }
+            };
+            vertexCode = load(vertexPath);
+            fragmentCode = load(fragmentPath);
+            geometryCode = load(geometryPath);
 
-                    std::stringstream vShaderStream, fShaderStream, gShaderStream;
-                    // read file's buffer contents into streams
-                    vShaderStream << vShaderFile.rdbuf();
-                    fShaderStream << fShaderFile.rdbuf();
-                    if(geometryPath != "")
-                        gShaderStream << gShaderFile.rdbuf();
-                    // close file handlers
-                    vShaderFile.close();
-                    fShaderFile.close();
-                    if(geometryPath != "")
-                        gShaderFile.close();
-                    // convert stream into string
-                    vertexCode   = vShaderStream.str();
-                    fragmentCode = fShaderStream.str();
-                    if(geometryPath != "")
-                        geometryCode = gShaderStream.str();
-                }
-                catch (const std::ifstream::failure &e)
-                {
-                    std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
-                }
-            } else {
-                vertexCode = vertexPath;
-                fragmentCode = fragmentPath;
-                geometryCode = geometryPath;
-            }
+//            if(isFile){
+//                try
+//                {
+//                    // open files
+//                    vShaderFile.open(vertexPath);
+//                    fShaderFile.open(fragmentPath);
+//                    if(geometryPath != "")
+//                        gShaderFile.open(geometryPath);
+//
+//                    std::stringstream vShaderStream, fShaderStream, gShaderStream;
+//                    // read file's buffer contents into streams
+//                    vShaderStream << vShaderFile.rdbuf();
+//                    fShaderStream << fShaderFile.rdbuf();
+//                    if(geometryPath != "")
+//                        gShaderStream << gShaderFile.rdbuf();
+//                    // close file handlers
+//                    vShaderFile.close();
+//                    fShaderFile.close();
+//                    if(geometryPath != "")
+//                        gShaderFile.close();
+//                    // convert stream into string
+//                    vertexCode   = vShaderStream.str();
+//                    fragmentCode = fShaderStream.str();
+//                    if(geometryPath != "")
+//                        geometryCode = gShaderStream.str();
+//                }
+//                catch (const std::ifstream::failure &e)
+//                {
+//                    std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+//                }
+//            } else {
+//                vertexCode = vertexPath;
+//                fragmentCode = fragmentPath;
+//                geometryCode = geometryPath;
+//            }
 
             const char *vShaderCode = vertexCode.c_str();
             const char *fShaderCode = fragmentCode.c_str();

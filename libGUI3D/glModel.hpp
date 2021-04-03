@@ -200,7 +200,58 @@ namespace glUtil{
             ss.close();
             printf("Shader Template Generated!\n");
         }
-        
+
+
+        auto computeCentroid(){
+            Eigen::Vector3f centroid = Eigen::Vector3f::Zero();//glm::value_ptr(model->meshes[0]->vertices[0].Position));
+            size_t counter=0;
+            for (glUtil::Mesh *mesh : this->meshes) {
+                for(auto &vertex : mesh->vertices){
+                    for(size_t i=0;i<3;++i){
+                        centroid[i] += vertex.Position[i];
+                    }
+                    counter++;
+                }
+            }
+            centroid /= float(counter);
+            return centroid;
+        }
+
+        void translate(const Eigen::Vector3f &translation){
+            for (glUtil::Mesh *mesh : this->meshes) {
+                for(auto &vertex : mesh->vertices){
+                    for(size_t i=0;i<3;++i)
+                        vertex.Position[i] += translation[i];
+                }
+            }
+        }
+
+        auto findMaximumDistance(){
+            float max_distance=0.f;
+            for (glUtil::Mesh *mesh : this->meshes) {
+                for(auto &vertex : mesh->vertices){
+                    auto pos = Eigen::Map<Eigen::Vector3f>(glm::value_ptr(vertex.Position));
+                    auto norm = pos.norm();
+                    if(norm > max_distance) max_distance = norm;
+                }
+            }
+            return max_distance;
+        }
+
+        void scale(float scale){
+            for (glUtil::Mesh *mesh : this->meshes) {
+                for(auto &vertex : mesh->vertices){
+                    auto pos = Eigen::Map<Eigen::Vector3f>(glm::value_ptr(vertex.Position));
+                    pos *= scale;
+                }
+            }
+        }
+
+        void update(){
+            for (glUtil::Mesh *mesh : this->meshes)
+                mesh->UpdateMesh();
+        }
+
         // Print INFO
         friend std::ostream& operator<<(std::ostream& os, const Model& model)
         {
@@ -243,7 +294,15 @@ namespace glUtil{
         {
             // read file via ASSIMP
             Assimp::Importer importer;
-            const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+            auto flags = aiProcess_Triangulate
+                         | aiProcess_OptimizeMeshes
+                         | aiProcess_JoinIdenticalVertices
+                         | aiProcess_Triangulate
+                         | aiProcess_CalcTangentSpace
+                         | aiProcess_FlipUVs
+                         ;
+//            aut flags = aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace;
+            const aiScene* scene = importer.ReadFile(path, flags);
             hasLights = scene->HasLights();
             hasMeshes = scene->HasMeshes();
             hasCameras = scene->HasCameras();
@@ -395,6 +454,32 @@ namespace glUtil{
             Mesh* pMesh = new Mesh(vertices, indices, textures);
             return pMesh;
         }
+
+        struct Material {
+            glm::vec3 Diffuse;
+            glm::vec3 Specular;
+            glm::vec3 Ambient;
+            float Shininess;
+        };
+        Material loadMaterial(aiMaterial* mat) {
+            Material material;
+            aiColor3D color(0.f, 0.f, 0.f);
+            float shininess;
+
+            mat->Get(AI_MATKEY_COLOR_DIFFUSE, color);
+            material.Diffuse = glm::vec3(color.r, color.b, color.g);
+
+            mat->Get(AI_MATKEY_COLOR_AMBIENT, color);
+            material.Ambient = glm::vec3(color.r, color.b, color.g);
+
+            mat->Get(AI_MATKEY_COLOR_SPECULAR, color);
+            material.Specular = glm::vec3(color.r, color.b, color.g);
+
+            mat->Get(AI_MATKEY_SHININESS, shininess);
+            material.Shininess = shininess;
+
+            return material;
+        }
         
         // checks all material textures of a given type and loads the textures if they're not loaded yet.
         // the required info is returned as a Texture struct.
@@ -472,8 +557,6 @@ namespace glUtil{
             return textureID;
         }
     };
-    
-    
 
 }
 #endif
