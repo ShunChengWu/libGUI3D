@@ -40,10 +40,10 @@ bool ImGui::FileSelectButton(const char *label, char *output_buffer, size_t buff
 //    ImGui::End();
 }
 
-
+#include <cstdio>
 bool ImGui::FolderSelectButton(const char *label, char *output_buffer, size_t buffer_size, const char *window_title) {
     if (ImGui::Button(label)) {
-        const char *filename = tinyfd_selectFolderDialog(window_title, "");
+        const char *filename = tinyfd_selectFolderDialog(window_title, output_buffer);
         if (filename) strcpy(output_buffer, filename);
         return true;
     }
