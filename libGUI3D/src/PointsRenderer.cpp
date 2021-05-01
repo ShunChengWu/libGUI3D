@@ -1,7 +1,7 @@
 //
 // Created by sc on 8/19/20.
 //
-#include "PointsRenderer.h"
+#include "../include/GUI3D/PointsRenderer.h"
 
 using namespace PSLAM;
 
