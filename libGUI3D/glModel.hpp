@@ -223,6 +223,17 @@ namespace glUtil{
                     for(size_t i=0;i<3;++i)
                         vertex.Position[i] += translation[i];
                 }
+                mesh->UpdateMesh();
+            }
+        }
+
+        void transform(const Eigen::Matrix4f &transform){
+            for (glUtil::Mesh *mesh : this->meshes) {
+                for(auto &vertex : mesh->vertices){
+                    auto point = Eigen::Map<Eigen::Vector3f>(glm::value_ptr(vertex.Position));
+                    point = transform.topLeftCorner<3,3>() * point + transform.topRightCorner<3,1>();
+                }
+                mesh->UpdateMesh();
             }
         }
 
