@@ -318,8 +318,8 @@ void GUI3D::basicProcess() {
     /// Draw Text
     if (bShowFPS) {
         glDisable(GL_DEPTH_TEST);
-        RenderText(glVertexArrays["textVAO"], glBuffers["textVBO"], glShaders["Text"],
-                   "FPS: " + std::to_string((int) std::floor(fps_->getFPS())), 10.f, 10.f, 0.5f, glm::vec3(0.5f, 0.8f, 0.2f));
+        RenderText("FPS: " + std::to_string((int) std::floor(fps_->getFPS())),
+                   10.f, 10.f, 0.5f, glm::vec3(0.5f, 0.8f, 0.2f));
         glEnable(GL_DEPTH_TEST);
     }
 
@@ -452,4 +452,9 @@ void GUI3D::cameraUI() {
 //    ImGui::DragFloat("Near",camera_control->Position)
 //    ImGui::DragFloat3("Position", &camera_control->Position[0]);
 //    ImGui::End();
+}
+
+void GUI3D::RenderText(const std::string &text, float pos_x, float pos_y, float scale, const glm::vec3 &color) {
+    RenderText(glVertexArrays["textVAO"], glBuffers["textVBO"], glShaders["Text"],
+               text, pos_x,pos_y,scale,color);
 }

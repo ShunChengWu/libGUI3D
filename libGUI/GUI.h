@@ -61,6 +61,7 @@ namespace SC{
         /// Draw OpenGL related
         virtual void drawGL();
 
+        GLFWWindowContainer * GetWindow(){return window_;}
     protected:
         bool bDrawDemoUI;
         static GUI_base *ptrInstance;
