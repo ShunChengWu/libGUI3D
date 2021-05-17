@@ -17,21 +17,20 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-//#include <map>
 #include <vector>
 #include <set>
 
 #include <Eigen/Core>
 
 namespace glUtil{
-    
-    
+
+
     class Model : private Model_base
     {
     public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
         using Model_base::setShader;
-        
+
         /*  Model Data */
         struct Boundaries{
             float mX=NAN, pX=NAN, mY=NAN, pY=NAN, mZ=NAN, pZ=NAN;
@@ -45,12 +44,12 @@ namespace glUtil{
         Eigen::Matrix4f model_pose;
         Boundaries boundaries;
         bool gammaCorrection;
-        
+
         /*  Functions   */
         // constructor, expects a filepath to a 3D model.
         Model(std::string const &path, bool gamma = false) : gammaCorrection(gamma),
-        hasLights(false), hasMeshes(false), hasCameras(false), hasTextures(false),
-        hasMaterials(false), hasAnimations(false)
+                                                             hasLights(false), hasMeshes(false), hasCameras(false), hasTextures(false),
+                                                             hasMaterials(false), hasAnimations(false)
         {
             vCorrName.clear();
             vCorrName.push_back(corrNameMap(aiTextureType_DIFFUSE   , "texture_diffuse"));
@@ -87,11 +86,11 @@ namespace glUtil{
             }
             return *this;
         }
-        
-        
+
+
         /// No need to init here. Just to inehrit the virtual class in Model_base
         void init(){};
-       
+
         /// Draw the model using auto-generated shader
         void Draw()
         {
@@ -109,7 +108,7 @@ namespace glUtil{
                 meshes[i]->Draw();
             }
         }
-        
+
         /**
          Manually change/add the texture to this model. The texture must be loaded first.
 
@@ -139,11 +138,11 @@ namespace glUtil{
                 }
             }
         }
-        
+
         void outputShaderTemplate(std::string outputPath = "shaderTemplate"){
             std::fstream ss(outputPath + ".fs", std::fstream::out);
             ss << "#version 330 core\n";
-            
+
             std::set<std::pair<std::string, std::string>> unique_names;
             for(const auto& mesh : meshes) {
                 for (auto names : mesh->generateTexNames()) {
@@ -153,7 +152,7 @@ namespace glUtil{
             for (const auto& name:unique_names) {
                 ss << "uniform " << name.second << " " << name.first << ";\n";
             }
-            
+
             ss << "out vec4 FragColor;\n";
             ss << "in vec3 FragPose;\n";
             ss << "in vec3 Color;\n";
@@ -169,10 +168,10 @@ namespace glUtil{
             ss << "\tresult.w = 1;\n";
             ss << "\tFragColor = result;\n";
             ss << "}\n";
-            
+
             ss.close();
-            
-            
+
+
             ss.open(outputPath + ".vs", std::fstream::out);
             ss << "#version 330 core\n";
             ss << "layout (location = 0) in vec3 aPos;\n";
@@ -200,7 +199,69 @@ namespace glUtil{
             ss.close();
             printf("Shader Template Generated!\n");
         }
-        
+
+
+        auto computeCentroid(){
+            Eigen::Vector3f centroid = Eigen::Vector3f::Zero();//glm::value_ptr(model->meshes[0]->vertices[0].Position));
+            size_t counter=0;
+            for (glUtil::Mesh *mesh : this->meshes) {
+                for(auto &vertex : mesh->vertices){
+                    for(size_t i=0;i<3;++i){
+                        centroid[i] += vertex.Position[i];
+                    }
+                    counter++;
+                }
+            }
+            centroid /= float(counter);
+            return centroid;
+        }
+
+        void translate(const Eigen::Vector3f &translation){
+            for (glUtil::Mesh *mesh : this->meshes) {
+                for(auto &vertex : mesh->vertices){
+                    for(size_t i=0;i<3;++i)
+                        vertex.Position[i] += translation[i];
+                }
+                mesh->UpdateMesh();
+            }
+        }
+
+        void transform(const Eigen::Matrix4f &transform){
+            for (glUtil::Mesh *mesh : this->meshes) {
+                for(auto &vertex : mesh->vertices){
+                    auto point = Eigen::Map<Eigen::Vector3f>(glm::value_ptr(vertex.Position));
+                    point = transform.topLeftCorner<3,3>() * point + transform.topRightCorner<3,1>();
+                }
+                mesh->UpdateMesh();
+            }
+        }
+
+        auto findMaximumDistance(){
+            float max_distance=0.f;
+            for (glUtil::Mesh *mesh : this->meshes) {
+                for(auto &vertex : mesh->vertices){
+                    auto pos = Eigen::Map<Eigen::Vector3f>(glm::value_ptr(vertex.Position));
+                    auto norm = pos.norm();
+                    if(norm > max_distance) max_distance = norm;
+                }
+            }
+            return max_distance;
+        }
+
+        void scale(float scale){
+            for (glUtil::Mesh *mesh : this->meshes) {
+                for(auto &vertex : mesh->vertices){
+                    auto pos = Eigen::Map<Eigen::Vector3f>(glm::value_ptr(vertex.Position));
+                    pos *= scale;
+                }
+            }
+        }
+
+        void update(){
+            for (glUtil::Mesh *mesh : this->meshes)
+                mesh->UpdateMesh();
+        }
+
         // Print INFO
         friend std::ostream& operator<<(std::ostream& os, const Model& model)
         {
@@ -234,16 +295,24 @@ namespace glUtil{
             }
         };
         std::vector<corrNameMap> vCorrName;
-        
+
         bool hasLights, hasMeshes, hasCameras, hasTextures, hasMaterials, hasAnimations; // material = textures
-        
+
         /*  Functions   */
         // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes std::vector.
         void loadModel(std::string const &path)
         {
             // read file via ASSIMP
             Assimp::Importer importer;
-            const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+            auto flags = aiProcess_Triangulate
+                         | aiProcess_OptimizeMeshes
+                         | aiProcess_JoinIdenticalVertices
+                         | aiProcess_Triangulate
+                         | aiProcess_CalcTangentSpace
+                         | aiProcess_FlipUVs
+            ;
+//            aut flags = aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace;
+            const aiScene* scene = importer.ReadFile(path, flags);
             hasLights = scene->HasLights();
             hasMeshes = scene->HasMeshes();
             hasCameras = scene->HasCameras();
@@ -261,11 +330,11 @@ namespace glUtil{
             directory = path.substr(0, path.find_last_of('/'));
             modelName = path.substr(directory.length()+1, path.length());
             modelName = modelName.substr(0, modelName.find_last_of('.'));
-            
+
             // process ASSIMP's root node recursively
             processNode(scene->mRootNode, scene);
         }
-        
+
         // processes a node in a recursive fashion. Processes each individual mesh located at the node and repeats this process on its children nodes (if any).
         void processNode(aiNode *node, const aiScene *scene)
         {
@@ -282,16 +351,16 @@ namespace glUtil{
             {
                 processNode(node->mChildren[i], scene);
             }
-            
+
         }
-        
+
         Mesh* processMesh(aiMesh *mesh, const aiScene *scene)
         {
             // data to fill
             std::vector<Vertex> vertices;
             std::vector<unsigned int> indices;
             std::vector<Texture> textures;
-            
+
             // Walk through each of the mesh's vertices
             for(unsigned int i = 0; i < mesh->mNumVertices; i++)
             {
@@ -306,7 +375,7 @@ namespace glUtil{
                     vertex.Color.g = mesh->mColors[0][i].g;
                     vertex.Color.b = mesh->mColors[0][i].b;
                 }
-                
+
                 if(std::isnan(boundaries.pX)){
                     boundaries.pX = boundaries.mX = vector.x;
                     boundaries.pY = boundaries.mY = vector.y;
@@ -319,7 +388,7 @@ namespace glUtil{
                     if (vector.z > boundaries.pZ) boundaries.pZ = vector.z;
                     else if (vector.z < boundaries.mZ) boundaries.mZ = vector.z;
                 }
-                
+
                 vertex.Position = vector;
                 // normals
                 if(mesh->mNormals != NULL) {
@@ -384,7 +453,7 @@ namespace glUtil{
             // diffuse: texture_diffuseN
             // specular: texture_specularN
             // normal: texture_normalN
-            
+
             for(const auto& corr : vCorrName){
                 std::vector<Texture> maps = loadMaterialTextures(material, corr.type, corr.name);
                 textures.insert(textures.end(), maps.begin(), maps.end());
@@ -395,7 +464,33 @@ namespace glUtil{
             Mesh* pMesh = new Mesh(vertices, indices, textures);
             return pMesh;
         }
-        
+
+        struct Material {
+            glm::vec3 Diffuse;
+            glm::vec3 Specular;
+            glm::vec3 Ambient;
+            float Shininess;
+        };
+        Material loadMaterial(aiMaterial* mat) {
+            Material material;
+            aiColor3D color(0.f, 0.f, 0.f);
+            float shininess;
+
+            mat->Get(AI_MATKEY_COLOR_DIFFUSE, color);
+            material.Diffuse = glm::vec3(color.r, color.b, color.g);
+
+            mat->Get(AI_MATKEY_COLOR_AMBIENT, color);
+            material.Ambient = glm::vec3(color.r, color.b, color.g);
+
+            mat->Get(AI_MATKEY_COLOR_SPECULAR, color);
+            material.Specular = glm::vec3(color.r, color.b, color.g);
+
+            mat->Get(AI_MATKEY_SHININESS, shininess);
+            material.Shininess = shininess;
+
+            return material;
+        }
+
         // checks all material textures of a given type and loads the textures if they're not loaded yet.
         // the required info is returned as a Texture struct.
         std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName)
@@ -429,15 +524,15 @@ namespace glUtil{
             }
             return textures;
         }
-        
+
         unsigned int TextureFromFile(const char *path, const std::string &directory, bool gamma = false)
         {
             std::string filename = std::string(path);
             filename = directory + '/' + filename;
-            
+
             unsigned int textureID;
             glGenTextures(1, &textureID);
-            
+
             int width, height, nrComponents;
             unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
             if (data)
@@ -451,16 +546,16 @@ namespace glUtil{
                     format = GL_RGBA;
                 else
                     throw "glMODEL::TextureFromFile::format doesn't support.\n";
-                
+
                 glBindTexture(GL_TEXTURE_2D, textureID);
                 glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
                 glGenerateMipmap(GL_TEXTURE_2D);
-                
+
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-                
+
                 stbi_image_free(data);
             }
             else
@@ -468,12 +563,10 @@ namespace glUtil{
                 std::cout << "Texture failed to load at path: " << path << std::endl;
                 stbi_image_free(data);
             }
-            
+
             return textureID;
         }
     };
-    
-    
 
 }
 #endif

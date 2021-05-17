@@ -39,8 +39,8 @@ namespace glUtil{
             Bitangent = b;
         }
         Vertex(float p1, float p2=0, float p3=0,
-                float c1=0, float c2=0, float c3=0,
-                float n1=0, float n2=0, float n3=0, float te1=0, float te2=0, float ta1=0, float ta2=0, float ta3=0, float b1=0, float b2=0, float b3=0){
+               float c1=0, float c2=0, float c3=0,
+               float n1=0, float n2=0, float n3=0, float te1=0, float te2=0, float ta1=0, float ta2=0, float ta3=0, float b1=0, float b2=0, float b3=0){
             Position = glm::vec3(p1,p2,p3);
             Normal = glm::vec3(n1,n2,n3);
             Color = glm::vec3(c1,c2,c3);
@@ -49,14 +49,14 @@ namespace glUtil{
             Bitangent = glm::vec3(b1,b2,b3);
         }
     };
-    
+
     struct Texture {
         unsigned int id;
         int type;
         std::string name;
         std::string path;
     };
-    
+
     class Mesh : public Model_base {
     public:
         /*  Mesh Data  */
@@ -64,7 +64,7 @@ namespace glUtil{
         std::vector<unsigned int> indices;
         std::vector<Texture> textures;
         unsigned int VAO;
-        
+
         /*  Functions  */
         // constructor
         Mesh(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices, const std::vector<Texture> &textures)
@@ -74,7 +74,7 @@ namespace glUtil{
             this->textures = textures;
             setupMesh();
         }
-        
+
         Mesh(const std::vector<Vertex> &vertices)
         {
             this->vertices = vertices;
@@ -82,14 +82,17 @@ namespace glUtil{
             this->textures = textures;
             setupMesh();
         }
-        
+
+        void UpdateMesh(){
+            Reset();
+            setupMesh();
+        }
+
         virtual ~Mesh()
         {
-            glDeleteVertexArrays(1, &VAO);
-            glDeleteBuffers(1, &VBO);
-            glDeleteBuffers(1, &EBO);
+            Reset();
         }
-        
+
         void addTexture(Texture &texture)
         {
             textures.push_back(texture);
@@ -103,10 +106,10 @@ namespace glUtil{
             texture.name = name;
             textures.push_back(texture);
         }
-        
+
         /// inherit the init from Model_base
         void init(){}
-        
+
         // render the mesh
         void Draw()
         {
@@ -127,7 +130,7 @@ namespace glUtil{
                 shader->set(texName.c_str(), static_cast<int>(i));
                 glBindTexture(textures[i].type, textures[i].id);// and finally bind the texture
             }
-            
+
             // draw mesh
             glBindVertexArray(VAO);
             if(indices.size())
@@ -135,7 +138,7 @@ namespace glUtil{
             else
                 glDrawArrays(GL_TRIANGLES, 0, vertices.size());
             glBindVertexArray(0);
-            
+
             // always good practice to set everything back to defaults once configured.
             glActiveTexture(GL_TEXTURE0);
         }
@@ -165,7 +168,7 @@ namespace glUtil{
                         throw "[glMesh][generateTexNames]Type not support\n";
                         break;
                 }
-                
+
                 nameVec.push_back(std::make_pair(texName, GLType));
             }
             return nameVec;
@@ -173,10 +176,10 @@ namespace glUtil{
     private:
         //
         std::map<std::string, unsigned int> texNameMap;
-        
+
         /*  Render data  */
         unsigned int VBO, EBO;
-        
+
         /*  Functions    */
         // initializes all the buffer objects/arrays
         void setupMesh()
@@ -186,7 +189,7 @@ namespace glUtil{
             glGenBuffers(1, &VBO);
             if(indices.size())
                 glGenBuffers(1, &EBO);
-            
+
             glBindVertexArray(VAO);
             // load data into vertex buffers
             glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -194,12 +197,12 @@ namespace glUtil{
             // The effect is that we can simply pass a pointer to the struct and it translates perfectly to a glm::vec3/2 array which
             // again translates to 3/2 floats which translates to a byte array.
             glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
-            
+
             if(indices.size()) {
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
                 glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
             }
-            
+
             // set the vertex attribute pointers
             // vertex Positions
             glEnableVertexAttribArray(0);
@@ -221,6 +224,12 @@ namespace glUtil{
             glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
 
             glBindVertexArray(0);
+        }
+
+        void Reset(){
+            glDeleteVertexArrays(1, &VAO);
+            glDeleteBuffers(1, &VBO);
+            glDeleteBuffers(1, &EBO);
         }
     };
 }
