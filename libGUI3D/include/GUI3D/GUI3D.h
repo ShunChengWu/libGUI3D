@@ -111,7 +111,9 @@ namespace SC{
 
         void setPlotTracjectory(bool option) {bPlotTrajectory = option;}
 
-//        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+        glUtil::Camera* GetCam(){return glCam.get();}
+
+        void RenderText(const std::string &text, float pos_x, float pos_y, float scale, const glm::vec3 &color);
     protected:
         std::map<std::string, unsigned int> glBuffers, glVertexArrays, glFrameBuffers, glTextures;
         std::map<std::string, glUtil::Shader*> glShaders;
