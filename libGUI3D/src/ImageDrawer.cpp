@@ -82,3 +82,11 @@ void ImageDrawer::Draw(){
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
+void ImageDrawer::Draw(const Eigen::Matrix4f &projection, const Eigen::Matrix4f &viewMatrix) {
+    mShader->use();
+    /// Draw Image
+    glActiveTexture(GL_TEXTURE0);
+    glBindVertexArray(VAO);
+    glBindTexture(GL_TEXTURE_2D, textID);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+}
