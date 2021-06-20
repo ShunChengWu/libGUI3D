@@ -96,6 +96,16 @@ namespace glUtil {
     }
 
     template<typename T, int m>
+    static  inline Eigen::Matrix<T, m, 1> GLM2E(const glm::vec<m, float, glm::precision::highp> &mat) {
+        Eigen::Matrix<T, m, 1> em;
+        for (int i = 0; i < m; ++i)
+        {
+            em(i) = mat[i];
+        }
+        return em;
+    }
+
+    template<typename T, int m>
     static inline glm::vec<m, float, glm::precision::highp> E2GLM(const Eigen::Matrix<T, m, 1>& em)
     {
         glm::vec<m, float, glm::precision::highp> v;
