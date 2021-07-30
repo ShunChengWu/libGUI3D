@@ -17,8 +17,8 @@ namespace glUtil{
                float yaw = -90.0f,
                float pitch = 0){
             bShowUI=false;
-            camera_control_.reset(new SC::CameraControl(position,up,yaw,pitch));
-            projection_control_.reset(new SC::ProjectionControl(windowWidth,windowHeight));
+            camera_control_ = std::make_unique<SC::CameraControl>(position,up,yaw,pitch);
+            projection_control_ = std::make_unique<SC::ProjectionControl>(windowWidth,windowHeight);
         }
 
         void setSize(int windowWidth, int windowHeight){

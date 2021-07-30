@@ -14,6 +14,7 @@ namespace SC{
     class CameraControlBase {
     public:
         CameraControlBase(): bShowUI(false), Position(0, 0, 0), WorldUp(0, 0, 0){}
+        virtual ~CameraControlBase()=default;
         virtual void mouse(const glm::vec2& p, int button, bool down)=0;
         virtual void drag(const glm::vec2& p, int button) = 0;
         virtual void scroll(const glm::vec2 &rel)=0;
