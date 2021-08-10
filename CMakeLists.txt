@@ -11,7 +11,6 @@ OPTION(BUILD_DEMO "Build demo" OFF)
 #################################
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
-
 #############
 ## External #
 #############
