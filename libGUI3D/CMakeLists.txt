@@ -10,6 +10,9 @@ SET(sources
         src/projection_control.cpp
         src/PointsRenderer.cpp
         src/ImageDrawer.cpp
+        src/TrajectoryDrawer.cpp
+        src/CameraDrawer.cpp
+        src/meshDrawer.cpp
         )
 SET(headers
         include/GUI3D/GUI3D.h
@@ -17,6 +20,10 @@ SET(headers
         include/GUI3D/glCamera.hpp
         include/GUI3D/glUtils.hpp
         include/GUI3D/PointsRenderer.h
+        include/GUI3D/ImageDrawer.h
+        include/GUI3D/TrajectoryDrawer.h
+        include/GUI3D/CameraDrawer.h
+        include/GUI3D/meshDrawer.h
         )
 
 ADD_LIBRARY(GUI3D ${sources} ${headers})
