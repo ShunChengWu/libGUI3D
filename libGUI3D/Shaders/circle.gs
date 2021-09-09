@@ -7,7 +7,7 @@ in VS_OUT {
 } gs_in[];
 
 out vec4 fColor;
-
+out vec2 v_coord;
 
 uniform mat4 modelPose;
 uniform float radius;
@@ -16,13 +16,17 @@ uniform float radius;
 void build_house(vec4 position)
 {    
     fColor = gs_in[0].color; // gs_in[0] since there's only one input vertex
-    gl_Position = position + vec4(-radius, -radius, 0.0, 0.0); // 1:bottom-left   
+    gl_Position = position + vec4(-radius, -radius, 0.0, 0.0); // 1:bottom-left
+    v_coord = vec2(-1.0,-1.0);
     EmitVertex();   
     gl_Position = position + vec4( radius, -radius, 0.0, 0.0); // 2:bottom-right
+    v_coord = vec2(1.0,-1.0);
     EmitVertex();
     gl_Position = position + vec4(-radius,  radius, 0.0, 0.0); // 3:top-left
+    v_coord = vec2(-1.0,1.0);
     EmitVertex();
     gl_Position = position + vec4( radius,  radius, 0.0, 0.0); // 4:top-right
+    v_coord = vec2(1.0,1.0);
     EmitVertex();
     EndPrimitive();
 }
