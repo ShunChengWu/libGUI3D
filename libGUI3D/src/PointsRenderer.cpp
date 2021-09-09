@@ -3,7 +3,7 @@
 //
 #include "../include/GUI3D/PointsRenderer.h"
 
-using namespace PSLAM;
+using namespace glUtil;
 
 PointRenderer::PointRenderer():mBufferSize(1e6),mPointSize(0),mbBufferInited(false){
     InitShader();
@@ -30,6 +30,15 @@ void PointRenderer::SetPointRadius(float radius) {
 glUtil::Shader *PointRenderer::GetShader(){return mShader.get();}
 
 void PointRenderer::Draw(glm::mat4 projection, glm::mat4 viewMatrix) const{
+    mShader->use();
+    mShader->set("projection", projection);
+    mShader->set("view", viewMatrix);
+    glBindVertexArray(VAO);
+    glDrawArrays(GL_POINTS, 0, mPointSize);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void PointRenderer::Draw(const Eigen::Matrix4f &projection, const Eigen::Matrix4f &viewMatrix) const{
     mShader->use();
     mShader->set("projection", projection);
     mShader->set("view", viewMatrix);

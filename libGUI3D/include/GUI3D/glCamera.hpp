@@ -62,7 +62,7 @@ namespace glUtil{
 //            memcpy(newT.topRightCorner(3, 1).data(), glm::value_ptr(camera_control_->Position), 3 * sizeof(float));
 //            return newT;
         }
-        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+//        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 #endif
 
         void drawUI(){

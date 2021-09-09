@@ -7,7 +7,7 @@
 
 #include <memory>
 #include "glShader.hpp"
-namespace PSLAM {
+namespace glUtil {
     class PointRenderer {
     public:
         explicit PointRenderer();
@@ -22,6 +22,8 @@ namespace PSLAM {
         glUtil::Shader *GetShader();
 
         void Draw(glm::mat4 projection, glm::mat4 viewMatrix) const;
+        void Draw(const Eigen::Matrix4f &projection,
+                  const Eigen::Matrix4f &viewMatrix) const;
         void SetPointRadius(float radius);
         float mPointRadius;
     private:
