@@ -15,6 +15,7 @@ namespace glUtil {
         void Init();
         void Add(glm::vec3 point, float interval=0.002);
         void Draw(const Eigen::Matrix4f& projection, const Eigen::Matrix4f& viewMatrix);
+        void Clear();
     private:
         std::vector<glm::vec3> mvTrajectories;
         unsigned int VAO, VBO, EBO;

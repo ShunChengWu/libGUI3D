@@ -83,3 +83,7 @@ void TrajectoryDrawer::UpdateBuffer(size_t newSize, bool force) {
     glBindVertexArray(0);
     bInited=true;
 }
+
+void TrajectoryDrawer::Clear() {
+    mvTrajectories.clear();
+}

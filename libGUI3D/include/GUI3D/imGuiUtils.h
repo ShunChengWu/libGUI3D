@@ -9,6 +9,7 @@
 #include <string>
 namespace SC {
     static bool AddSelectionnMenu(const char **options, int size, int &type, const std::string &name){
+        if(type >= size) type = size-1;
         int pre_type = type;
         ImGui::Text("%s", name.c_str());
         ImGui::SameLine();
