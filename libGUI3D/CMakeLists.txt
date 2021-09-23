@@ -13,6 +13,8 @@ SET(sources
         src/TrajectoryDrawer.cpp
         src/CameraDrawer.cpp
         src/meshDrawer.cpp
+        src/BoxDrawer.cpp
+        src/BBoxDrawer.cpp
         )
 SET(headers
         include/GUI3D/GUI3D.h
@@ -24,6 +26,8 @@ SET(headers
         include/GUI3D/TrajectoryDrawer.h
         include/GUI3D/CameraDrawer.h
         include/GUI3D/meshDrawer.h
+        include/GUI3D/BoxDrawer.h
+        include/GUI3D/BBoxDrawer.h
         )
 
 ADD_LIBRARY(GUI3D ${sources} ${headers})
