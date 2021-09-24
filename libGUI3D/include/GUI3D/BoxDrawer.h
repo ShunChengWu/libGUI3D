@@ -13,10 +13,14 @@ namespace glUtil {
     public:
         BoxDrawer()=default;
         ~BoxDrawer();
+
+        enum Mode {
+            Line, Triangle
+        };
+
         void Init();
 //        void Update(const unsigned char *data, int width, int height);
-        void Draw(const Eigen::Matrix4f& projection, const Eigen::Matrix4f& viewMatrix);
-
+        void Draw(const Eigen::Matrix4f& projection, const Eigen::Matrix4f& viewMatrix, Mode mode = Triangle);
         void SetModel(const Eigen::Matrix4f &model);
         void SetColor(const Eigen::Vector4f &c) {
             this->color = c;

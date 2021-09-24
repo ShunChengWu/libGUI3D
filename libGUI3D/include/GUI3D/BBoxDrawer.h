@@ -14,7 +14,7 @@ namespace glUtil {
 
         void Init(){};
 
-        void Draw(const Eigen::Matrix4f& projection, const Eigen::Matrix4f& viewMatrix);
+        void Draw(const Eigen::Matrix4f& projection, const Eigen::Matrix4f& viewMatrix, BoxDrawer::Mode mode = BoxDrawer::Mode::Triangle);
 
         void Set(const Eigen::Vector3f &pos, const Eigen::Vector3f &dims, const Eigen::Matrix4f &T);
 

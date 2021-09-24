@@ -48,9 +48,10 @@ void BoxDrawer::Init() {
                         0.5f * size, 0.5f * size, -0.5f * size,
                         0.5f * size, 0.5f * size, 0.5f * size,
     };
-    glGenBuffers(1, &VBO);
     glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
+
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
@@ -79,7 +80,8 @@ void BoxDrawer::SetModel(const Eigen::Matrix4f &model) {
 
 void BoxDrawer::Draw(
         const Eigen::Matrix4f &projection,
-        const Eigen::Matrix4f &viewMatrix) {
+        const Eigen::Matrix4f &viewMatrix,
+        Mode mode) {
     assert(bInited);
     mShader->use();
     mShader->set("color", color);
@@ -87,6 +89,13 @@ void BoxDrawer::Draw(
     mShader->set("projection",projection);
     glBindVertexArray(VAO);
     glLineWidth(3);
-    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+    switch(mode){
+        case Line:
+            glDrawElements(GL_LINES, 36, GL_UNSIGNED_INT, 0);
+            break;
+        case Triangle:
+            glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+            break;
+    }
     glLineWidth(1);
 }
