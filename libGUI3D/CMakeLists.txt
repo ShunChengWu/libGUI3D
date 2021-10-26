@@ -15,6 +15,7 @@ SET(sources
         src/meshDrawer.cpp
         src/BoxDrawer.cpp
         src/BBoxDrawer.cpp
+        src/EllipsoidDrawer.cpp
         )
 SET(headers
         include/GUI3D/GUI3D.h
@@ -28,6 +29,7 @@ SET(headers
         include/GUI3D/meshDrawer.h
         include/GUI3D/BoxDrawer.h
         include/GUI3D/BBoxDrawer.h
+        include/GUI3D/EllipsoidDrawer.h
         )
 
 ADD_LIBRARY(GUI3D ${sources} ${headers})
