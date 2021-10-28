@@ -5,6 +5,9 @@
 #include <GUI3D/TrajectoryDrawer.h>
 
 using namespace glUtil;
+TrajectoryDrawer::TrajectoryDrawer():
+mColor(0.f,1.f,0.f,1.f){
+}
 
 TrajectoryDrawer::~TrajectoryDrawer() {
     if(bInited) {
@@ -17,7 +20,7 @@ void TrajectoryDrawer::Init() {
     const std::string shaderPath = std::string(GUI_FOLDER_PATH) + "Shaders/";
     mShader = std::make_unique<glUtil::Shader>(shaderPath+"camera_shader.vs",shaderPath+"camera_shader.fs");
     mShader->use();
-    mShader->set("color", Eigen::Vector4f{0, 1, 0, 1.f});
+    mShader->set("color", mColor);
     mShader->set("model", glm::mat4(1.f));
     UpdateBuffer(2<<8);
 }
@@ -43,14 +46,16 @@ void TrajectoryDrawer::Add(glm::vec3 point, float interval){
     }
 }
 
-void TrajectoryDrawer::Draw(const Eigen::Matrix4f &projection, const Eigen::Matrix4f &viewMatrix) {
+void TrajectoryDrawer::Draw(glm::mat4 proj, glm::mat4 view) {
     mShader->use();
-    mShader->set("projection", projection);
-    mShader->set("view", viewMatrix);
+    mShader->set("projection", proj);
+    mShader->set("view", view);
+    mShader->set("color",mColor);
     glBindVertexArray(VAO);
     glDrawArrays(GL_LINE_STRIP, 0, mvTrajectories.size());
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
+
 
 
 void TrajectoryDrawer::UpdateBuffer(size_t newSize, bool force) {
@@ -87,3 +92,29 @@ void TrajectoryDrawer::UpdateBuffer(size_t newSize, bool force) {
 void TrajectoryDrawer::Clear() {
     mvTrajectories.clear();
 }
+
+void TrajectoryDrawer::SetColor(glm::vec4 color) {
+    mColor=color;
+}
+#ifdef COMPILE_WITH_EIGEN
+
+void TrajectoryDrawer::Draw(const Eigen::Matrix4f &projection, const Eigen::Matrix4f &viewMatrix) {
+    mShader->use();
+    mShader->set("projection", projection);
+    mShader->set("view", viewMatrix);
+    mShader->set("color",mColor);
+    glBindVertexArray(VAO);
+    glDrawArrays(GL_LINE_STRIP, 0, mvTrajectories.size());
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void TrajectoryDrawer::SetColor(const Eigen::Vector4f & color) {
+    glm::vec4 clr = {color.x(),color.y(),color.z(),color.w()};
+    this->SetColor(clr);
+}
+
+void TrajectoryDrawer::Add(const Eigen::Vector3f &point, float interval){
+    glm::vec3 pt (point.x(),point.y(),point.z());
+    this->Add(pt,interval);
+}
+#endif
