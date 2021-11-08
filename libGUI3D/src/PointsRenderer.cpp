@@ -84,7 +84,7 @@ void PointRenderer::UpdateBuffer(size_t newSize, bool force){
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat),
-                          (void *) (mBufferSize * 4 * sizeof(GLfloat)));
+                          (void *) (4 * mBufferSize * sizeof(GLfloat)));
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     mbBufferInited=true;
 }

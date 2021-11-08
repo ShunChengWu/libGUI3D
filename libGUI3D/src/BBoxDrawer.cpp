@@ -19,7 +19,10 @@ void BBoxDrawer::Draw(
         const Eigen::Matrix4f &projection,
         const Eigen::Matrix4f &viewMatrix,
         BoxDrawer::Mode mode) {
-    for (auto &drawer:mBoxDrawers) drawer.Draw(projection,viewMatrix,mode);
+    for (auto &drawer:mBoxDrawers) {
+        drawer.SetMode(mode);
+        drawer.Draw(projection,viewMatrix);
+    }
 }
 
 void BBoxDrawer::Set(const Eigen::Vector3f &pos, const Eigen::Vector3f &dims, const Eigen::Matrix4f &T) {
