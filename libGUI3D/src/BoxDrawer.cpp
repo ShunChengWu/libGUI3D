@@ -10,7 +10,7 @@ BoxDrawer::~BoxDrawer(){
     if(bInited) {
         glDeleteVertexArrays(1, &VAO);
         glDeleteBuffers(1, &VBO);
-        glDeleteBuffers(1, &EBO);
+//        glDeleteBuffers(1, &EBO);
     }
 }
 
@@ -36,10 +36,13 @@ void BoxDrawer::Init() {
                                  "uniform vec4 color;\n"
                                  "void main()\n"
                                  "{\n"
-                                 "    vec3 viewDir = normalize(-FragPos);\n"
-                                 "    float diffuse = abs(dot(Normal, viewDir));\n"
-                                 "    vec4 color_ = color*diffuse;\n"
+//                                 "    vec3 viewDir = normalize(-FragPos);\n"
+                                 "    vec3 viewDir = vec3(0,0,1);\n"
+                                 "    vec3 normal = normalize(Normal);\n"
+                                 "    float diffuse = abs(dot(normal, viewDir));\n"
+                                 "    vec4 color_ = 0.1*color+0.9*color*diffuse;\n"
                                  "    color_.w=1;\n"
+//                                 "    color_.xyz =Normal;\n"
                                  "    FragColor = color_;   \n"
                                  "}";
     /**
@@ -63,34 +66,58 @@ void BoxDrawer::Init() {
                               2,3,7,2,7,6, //front
                               5,1,0,5,0,4}; // back
     const float size = 1.f;
-    float vertices[] = {-0.5f * size, -0.5f * size, -0.5f * size, -1,-1,-1,
-                        -0.5f * size, -0.5f * size, 0.5f * size, -1,-1,1,
-                        -0.5f * size, 0.5f * size, -0.5f * size, -1,1,-1,
-                        -0.5f * size, 0.5f * size, 0.5f * size, -1,1,1,
-                        0.5f * size, -0.5f * size, -0.5f * size, 1,-1,-1,
-                        0.5f * size, -0.5f * size, 0.5f * size, 1,-1,1,
-                        0.5f * size, 0.5f * size, -0.5f * size, 1,1,-1,
-                        0.5f * size, 0.5f * size, 0.5f * size, 1,1,1
+    float vertices[] = {-0.5f * size, -0.5f * size, -0.5f * size,
+                        -0.5f * size, -0.5f * size, 0.5f * size,
+                        -0.5f * size, 0.5f * size, -0.5f * size,
+                        -0.5f * size, 0.5f * size, 0.5f * size,
+                        0.5f * size, -0.5f * size, -0.5f * size,
+                        0.5f * size, -0.5f * size, 0.5f * size,
+                        0.5f * size, 0.5f * size, -0.5f * size,
+                        0.5f * size, 0.5f * size, 0.5f * size,
     };
-//    float normals[] = {
-//            -1,0,0,-1,0,0,
-//            0,0,1,0,0,1,
-//            1,0,0,1,0,0,
-//            0,0,-1,0,0,-1,
-//            0,1,0,0,1,0,
-//            0,-1,0,0,-1,0
+//    float vertices[] = {-0.5f * size, -0.5f * size, -0.5f * size, -1,-1,-1,
+//                        -0.5f * size, -0.5f * size, 0.5f * size, -1,-1,1,
+//                        -0.5f * size, 0.5f * size, -0.5f * size, -1,1,-1,
+//                        -0.5f * size, 0.5f * size, 0.5f * size, -1,1,1,
+//                        0.5f * size, -0.5f * size, -0.5f * size, 1,-1,-1,
+//                        0.5f * size, -0.5f * size, 0.5f * size, 1,-1,1,
+//                        0.5f * size, 0.5f * size, -0.5f * size, 1,1,-1,
+//                        0.5f * size, 0.5f * size, 0.5f * size, 1,1,1
 //    };
+
+    float normals[] = {
+            -1,0,0, // left
+            0,0,1,//top
+            1,0,0,//right
+            0,0,-1,//down
+            0,1,0,//front
+            0,-1,0//back
+    };
+
+    std::vector<float> data;
+    int idx_normal = 0;
+    for (size_t i=0;i<36;++i) {
+        int idx = indices[i];
+        if ( (i) % 6 == 0 && i>0 ) idx_normal+=1;
+        for (size_t j=0;j<3;++j) {
+            data.push_back( vertices[idx*3+j] );
+        }
+        for (size_t j=0;j<3;++j) {
+            data.push_back(normals[idx_normal * 3 + j]);
+        }
+    }
+
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
+//    glGenBuffers(1, &EBO);
 
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, data.size()*sizeof(float), data.data(), GL_STATIC_DRAW);
+//    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
 
-    // Lines
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+//    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), nullptr);
@@ -128,10 +155,12 @@ void BoxDrawer::Draw(
     glLineWidth(3);
     switch(mMode){
         case Line:
-            glDrawElements(GL_LINES, 36, GL_UNSIGNED_INT, 0);
+            glDrawArrays(GL_LINES,0, 216);
+//            glDrawElements(GL_LINES, 36, GL_UNSIGNED_INT, 0);
             break;
         case Triangle:
-            glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+            glDrawArrays(GL_TRIANGLES,0, 216);
+//            glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
             break;
     }
     glLineWidth(1);

@@ -32,10 +32,10 @@ void BBoxDrawer::Set(const Eigen::Vector3f &pos, const Eigen::Vector3f &dims, co
             {dims[0],width,width},
             {dims[0],width,width},
             {dims[0],width,width},
-            {width,dims[1],width},
-            {width,dims[1],width},
-            {width,dims[1],width},
-            {width,dims[1],width},
+            {width,dims[1]+width,width},//plus width to fill the nonoverlapping region
+            {width,dims[1]+width,width},//plus width to fill the nonoverlapping region
+            {width,dims[1]+width,width},//plus width to fill the nonoverlapping region
+            {width,dims[1]+width,width},//plus width to fill the nonoverlapping region
             {width,width,dims[2]},
             {width,width,dims[2]},
             {width,width,dims[2]},
