@@ -49,7 +49,7 @@ void PointRenderer::Draw(const Eigen::Matrix4f &projection, const Eigen::Matrix4
 
 void PointRenderer::InitShader(){
     const std::string shaderPath = std::string(GUI_FOLDER_PATH) + "Shaders/";
-    mBufferSize = 1e6;
+    mBufferSize = 1e3;
     mPointRadius = 0.05;
     mShader = std::make_shared<glUtil::Shader>(shaderPath + "circle.vs",
                                                shaderPath + "circle.fs",
@@ -65,7 +65,7 @@ void PointRenderer::UpdateBuffer(size_t newSize, bool force){
     if (!force)
         if (mBufferSize > newSize && mbBufferInited) return;
 
-    mBufferSize = (std::floor(newSize / 1e6) + 1) * 1e6;
+    mBufferSize = (std::floor(newSize / 1e3) + 1) * 1e3;
 
     if (mbBufferInited) {
         glDeleteVertexArrays(1, &VAO);
