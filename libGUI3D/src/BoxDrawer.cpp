@@ -155,11 +155,11 @@ void BoxDrawer::Draw(
     glLineWidth(3);
     switch(mMode){
         case Line:
-            glDrawArrays(GL_LINES,0, 216);
+            glDrawArrays(GL_LINES,0, 36);
 //            glDrawElements(GL_LINES, 36, GL_UNSIGNED_INT, 0);
             break;
         case Triangle:
-            glDrawArrays(GL_TRIANGLES,0, 216);
+            glDrawArrays(GL_TRIANGLES,0, 36);
 //            glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
             break;
     }
