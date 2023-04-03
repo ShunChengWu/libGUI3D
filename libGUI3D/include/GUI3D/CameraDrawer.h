@@ -13,7 +13,7 @@ namespace glUtil {
     public:
         CameraDrawer()=default;
         ~CameraDrawer();
-        void Init();
+        void Init(float size =0.1f);
 //        void Update(const unsigned char *data, int width, int height);
         void Draw(Eigen::Matrix4f model, const Eigen::Matrix4f& projection, const Eigen::Matrix4f& viewMatrix);
 

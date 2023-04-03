@@ -14,7 +14,7 @@ CameraDrawer::~CameraDrawer(){
     }
 }
 
-void CameraDrawer::Init() {
+void CameraDrawer::Init(float size) {
     const std::string vsShader = "#version 330\n"
                                  "layout(location = 0) in vec3 position;\n"
                                  "uniform mat4 model;\n"
@@ -34,7 +34,6 @@ void CameraDrawer::Init() {
 
     unsigned int indices[] = {0, 1, 0, 2, 0, 3, 0, 4,
                               1, 2, 2, 3, 3, 4, 4, 1};
-    const float size = 0.1f;
     float vertices[] = { 0, 0, 0,
                          -0.5f*size, -0.5f*size, 1*size,
                          0.5f*size, -0.5f*size, 1*size,
