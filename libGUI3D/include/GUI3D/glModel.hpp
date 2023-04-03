@@ -560,7 +560,7 @@ namespace glUtil{
             }
             else
             {
-                std::cout << "Texture failed to load at path: " << path << std::endl;
+                std::cout << "Texture failed to load at path: " << filename << std::endl;
                 stbi_image_free(data);
             }
 
